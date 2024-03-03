@@ -2,7 +2,7 @@ import { Button, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ChangeEvent } from "react";
-import { ImageGetReq } from "../model/Response/ImageGetReq";
+import { ImageGetReq } from "../model/Response/ImageGetRes";
 
 function UploadPage() {
   const [file, setFile] = useState();

@@ -143,10 +143,21 @@ function LoginPage() {
                         );
                         const login: LoginPostRes[] = res.data;
                         if (res.status == 200) {
+                          localStorage.clear();
+                          // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อ login สำเร็จ
+                          const user = {
+                            uid: login[0].uid,
+                            email: login[0].email,
+                            pass: passRef.current.value,
+                            image: login[0].image,
+                            name: login[0].name,
+                          };
+                          localStorage.setItem("objUser", JSON.stringify(user));
                           if (login[0].type < 1) {
-                            console.log(login[0]);
+                            // user
                             navigate("/home/" + login[0].uid);
                           } else {
+                            // admin
                             navigate("/admin");
                           }
                         }
