@@ -21,7 +21,7 @@ function Header() {
     navigate(`/home/${user.uid}/rank`);
   }
   function navigateToAdminPage() {
-    navigate("/admin_userall");
+    navigate(`/home/${user.uid}/upload`);
   }
   return (
     <>
