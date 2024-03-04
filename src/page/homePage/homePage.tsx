@@ -5,7 +5,7 @@ function HomePage() {
   return (
     <>
       <Header></Header>
-      <Outlet></Outlet>
+      <Outlet />
     </>
   )
 }

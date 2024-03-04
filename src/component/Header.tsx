@@ -4,19 +4,21 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/cat.png";
 
 function Header() {
+  const user = JSON.parse(localStorage.getItem("objUser")!);
   const navigate = useNavigate();
 
   function navigateToLoginPage() {
+    localStorage.clear();
     navigate("/");
   }
   function navigateToProfilePage() {
-    navigate("/profile");
+    navigate(`/home/${user.uid}/profile`);
   }
   function navigateToVotePage() {
-    navigate("/vote");
+    navigate(`/home/${user.uid}`);
   }
   function navigateToRankingPage() {
-    navigate("/ranking");
+    navigate(`/home/${user.uid}/rank`);
   }
   function navigateToAdminPage() {
     navigate("/admin_userall");

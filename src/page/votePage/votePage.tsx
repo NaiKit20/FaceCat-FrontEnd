@@ -3,7 +3,7 @@ import { CardMedia, Typography } from "@mui/material";
 import "./votePage.css";
 import { useEffect, useState } from "react";
 import { ImageService } from "../../service/imageService";
-import { RandomRes } from "../../model/Response/RandomRes";
+import { RandomRes as ImageGetRes } from "../../model/Response/RandomRes";
 import { useParams } from "react-router-dom";
 
 function VotePage() {
@@ -11,16 +11,22 @@ function VotePage() {
   const uid = params.id;
 
   const imageService = new ImageService();
-  const [randomImages, setRandom] = useState<RandomRes[]>([]);
+  const [randomImages, setRandom] = useState<ImageGetRes[]>([]);
   // InitState
   useEffect(() => {
     const loadDataAsync = async () => {
       const response = await imageService.random(uid!);
-      const images: RandomRes[] = response.data;
+      const images: ImageGetRes[] = response.data;
       setRandom(images);
     };
     loadDataAsync();
   }, []);
+  // สุ่มรูปภาพใหม่
+  async function randomImage() {
+    const response = await imageService.random(uid!);
+    const images: ImageGetRes[] = response.data;
+    setRandom(images);
+  }
 
   return (
     <>
@@ -30,6 +36,7 @@ function VotePage() {
           flexDirection={"column"}
           justifyContent={"center"}
           alignItems={"center"}
+          marginTop={"70px"}
         >
           <Typography
             gutterBottom
@@ -46,50 +53,70 @@ function VotePage() {
           >
             คุณชอบอะไร?
           </Typography>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div
+            style={{
+              width: "900px",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
             {/* สุ่มรูปภาพมาแสดงผล */}
-            {randomImages.map((image) => (
-              <Box
-                sx={{
-                  width: 400,
-                  height: 500,
-                  borderRadius: 10,
-                  backgroundColor: "#FFA928",
-                  marginRight: 15,
-                  flexDirection: "column",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+            {randomImages.map((image, index) => (
+              <div
+                key={index}
+                onClick={() => {
+                  if(index == 0) {
+                    console.log(randomImages[index].name + " win");
+                    console.log(randomImages[1].name + " lose");
+                  }else {
+                    console.log(randomImages[1].name + " win");
+                    console.log(randomImages[0].name + " lose");
+                  }
                 }}
               >
-                <CardMedia
+                <Box
                   sx={{
-                    height: 300,
-                    width: 300,
-                    borderRadius: 50,
+                    width: 400,
+                    height: 500,
+                    borderRadius: 10,
+                    backgroundColor: "#FFA928",
+                    marginRight: 15,
+                    flexDirection: "column",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
+                    margin: "0 auto",
                   }}
-                  image={"http://localhost:3000/uploads/"+image.path}
-                />
-                <Typography
-                  gutterBottom
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-
-                    color: "black",
-                    // ml: 2,
-                    fontFamily: "Mitr, sans-serif",
-                  }}
-                  variant="h2"
-                  marginTop={"15px"}
                 >
-                  {image.name}
-                </Typography>
-              </Box>
+                  <CardMedia
+                    sx={{
+                      height: 300,
+                      width: 300,
+                      borderRadius: 50,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    image={"http://localhost:3000/uploads/" + image.path}
+                  />
+                  <Typography
+                    gutterBottom
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+
+                      color: "black",
+                      // ml: 2,
+                      fontFamily: "Mitr, sans-serif",
+                    }}
+                    variant="h2"
+                    marginTop={"15px"}
+                  >
+                    {image.name}
+                  </Typography>
+                </Box>
+              </div>
             ))}
           </div>
         </Box>
