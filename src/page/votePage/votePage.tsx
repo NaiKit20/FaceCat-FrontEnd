@@ -4,18 +4,14 @@ import "./votePage.css";
 import { useEffect, useState } from "react";
 import { ImageService } from "../../service/imageService";
 import { RandomRes as ImageGetRes } from "../../model/Response/RandomRes";
-import { useParams } from "react-router-dom";
 
 function VotePage() {
-  const params = useParams();
-  const uid = params.id;
-
   const imageService = new ImageService();
   const [randomImages, setRandom] = useState<ImageGetRes[]>([]);
   // InitState
   useEffect(() => {
     const loadDataAsync = async () => {
-      const response = await imageService.random(uid!);
+      const response = await imageService.random();
       const images: ImageGetRes[] = response.data;
       setRandom(images);
     };
@@ -23,7 +19,7 @@ function VotePage() {
   }, []);
   // สุ่มรูปภาพใหม่
   async function randomImage() {
-    const response = await imageService.random(uid!);
+    const response = await imageService.random();
     const images: ImageGetRes[] = response.data;
     setRandom(images);
   }

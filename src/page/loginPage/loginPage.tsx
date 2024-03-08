@@ -144,7 +144,7 @@ function LoginPage() {
                         const login: LoginPostRes[] = res.data;
                         if (res.status == 200) {
                           localStorage.clear();
-                          // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อ login สำเร็จ
+                          // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อแก้ไขข้อมูล
                           const user = {
                             uid: login[0].uid,
                             email: login[0].email,

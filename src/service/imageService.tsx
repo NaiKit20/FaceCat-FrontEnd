@@ -10,8 +10,8 @@ export class ImageService {
     return response;
   }
 
-  async random(uid: string) {
-    const url = HOST + `/random/${uid}`;
+  async random() {
+    const url = HOST + `/random`;
     const response = await axios.get(url); 
     return response;
   }

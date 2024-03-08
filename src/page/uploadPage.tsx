@@ -2,18 +2,20 @@ import { Button, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ChangeEvent } from "react";
-import { ImageGetReq } from "../model/Response/ImageGetRes";
+import multer from "multer";
+import { storage } from "../service/firebase";
 
 function UploadPage() {
-  const [file, setFile] = useState();
-  const [img, setImage] = useState<ImageGetReq[]>([]);
+  const [file, setFile] = useState<File | null>(null);
+
+  function selectFile(event: ChangeEvent<HTMLInputElement>) {
+    if (event.target.files) {
+      setFile(event.target.files[0]);
+    }
+  }
 
   useEffect(() => {
-    const loadDataAsync = async () => {
-      const res = await axios.get("http://localhost:3000/image");
-      const image: ImageGetReq[] = res.data;
-      setImage(image);
-    };
+    const loadDataAsync = async () => {};
     loadDataAsync();
   }, []);
 
@@ -23,29 +25,12 @@ function UploadPage() {
       <Button variant="contained" onClick={upload}>
         Upload File
       </Button>
-
-      <div style={{border: "1px solid red"}}>
-        {img?.map((item) => (
-          <img width={"100%"} src={item.path} alt="" key={item.mid} />
-        ))}
-      </div>
-
-      {/* <div style={{border: "1px solid red", height: "300px"}}>
-
-      </div>
-      <img src="http://localhost:3000/uploads/1708933613493-1420.png" alt="" /> */}
     </>
   );
 
-  function selectFile(event: ChangeEvent<HTMLInputElement>) {
-    if (event.target.files) {
-      setFile(event.target.files[0]);
-      console.log(event.target.files[0].name);
-    }
-  }
-
   async function upload() {
     if (file) {
+      console.log(file);
       console.log("Uploading");
       const url = `http://localhost:3000/upload`;
       const body = {
@@ -63,9 +48,8 @@ function UploadPage() {
       console.log(result);
 
       const data = await axios.get("http://localhost:3000/image");
-      const image: ImageGetReq[] = data.data;
-      setImage(image);
-      // console.log(data.data);
+    }else {
+      console.log("ไม่มีไฟล์");
     }
   }
 }

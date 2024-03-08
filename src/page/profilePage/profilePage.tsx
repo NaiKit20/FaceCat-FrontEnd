@@ -12,7 +12,7 @@ function ProfilePage() {
   const navigate = useNavigate();
 
   function navigateToProfileEditPage() {
-    navigate("/ProfileEdit");
+    navigate("edit");
   }
 
   // InitState
@@ -70,7 +70,7 @@ function ProfilePage() {
               flexDirection: "row",
               display: "flex",
               justifyContent: "space-between",
-              marginLeft: "100px",
+              marginLeft: "60px",
             }}
           >
             <div
@@ -90,8 +90,9 @@ function ProfilePage() {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
+                    border: "1px solid red"
                   }}
-                  image="src/img/profile.jpg"
+                  image={user.image}
                 />
               </div>
               <div
@@ -121,6 +122,7 @@ function ProfilePage() {
                     sx={{ m: 1, width: "40ch" }}
                     InputProps={{
                       sx: { borderRadius: "50px", bgcolor: "white" },
+                      readOnly: true,
                       startAdornment: (
                         <>
                           <h3>{user.name}</h3>
@@ -157,6 +159,7 @@ function ProfilePage() {
                     sx={{ m: 1, width: "40ch" }}
                     InputProps={{
                       sx: { borderRadius: "50px", bgcolor: "white" },
+                      readOnly: true,
                       startAdornment: (
                         <>
                           <h3>{user.email}</h3>
@@ -193,6 +196,7 @@ function ProfilePage() {
                     sx={{ m: 1, width: "40ch" }}
                     InputProps={{
                       sx: { borderRadius: "50px", bgcolor: "white" },
+                      readOnly: true,
                       startAdornment: (
                         <>
                           <h3>{user.pass}</h3>
@@ -225,7 +229,9 @@ function ProfilePage() {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  onClick={navigateToProfileEditPage}
+                  onClick={() => {
+
+                  }}
                   image="src/img/cat2.jpg"
                 />
               </Grid>
@@ -305,7 +311,7 @@ function ProfilePage() {
           display: "flex",
           justifyContent: "end",
           flexDirection: "row",
-          marginTop: "10px",
+          marginTop:"10px"
         }}
       >
         <Button
