@@ -15,4 +15,12 @@ export class ImageService {
     const response = await axios.get(url); 
     return response;
   }
+
+  async getImagesByUid(uid: string) {
+    const url = HOST + "/user/" + uid;
+    const response = await axios.get(url);
+    console.log(response.data);
+    
+    return response;
+  }
 }

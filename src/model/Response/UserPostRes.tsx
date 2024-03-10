@@ -1,4 +1,4 @@
-export interface LoginPostRes {
+export interface UserPostRes {
     uid:      number;
     email:    string;
     password: string;

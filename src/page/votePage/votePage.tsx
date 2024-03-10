@@ -8,6 +8,14 @@ import { RandomRes as ImageGetRes } from "../../model/Response/RandomRes";
 function VotePage() {
   const imageService = new ImageService();
   const [randomImages, setRandom] = useState<ImageGetRes[]>([]);
+  
+  // สุ่มรูปภาพใหม่
+  async function randomImage() {
+    const response = await imageService.random();
+    const images: ImageGetRes[] = response.data;
+    setRandom(images);
+  }
+
   // InitState
   useEffect(() => {
     const loadDataAsync = async () => {
@@ -16,13 +24,8 @@ function VotePage() {
       setRandom(images);
     };
     loadDataAsync();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // สุ่มรูปภาพใหม่
-  async function randomImage() {
-    const response = await imageService.random();
-    const images: ImageGetRes[] = response.data;
-    setRandom(images);
-  }
 
   return (
     <>
@@ -61,6 +64,8 @@ function VotePage() {
               <div
                 key={index}
                 onClick={() => {
+                  randomImage();
+                  
                   if(index == 0) {
                     console.log(randomImages[index].name + " win");
                     console.log(randomImages[1].name + " lose");

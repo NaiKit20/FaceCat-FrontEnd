@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/cat.png";
 import { useRef } from "react";
 import { UserService } from "../../service/userService";
-import { LoginPostRes } from "../../model/Response/LoginPostRes";
+import { UserPostRes } from "../../model/Response/UserPostRes";
 
 function LoginPage() {
   const emailRef = useRef<HTMLInputElement>();
@@ -141,7 +141,7 @@ function LoginPage() {
                           emailRef.current.value,
                           passRef.current.value
                         );
-                        const login: LoginPostRes[] = res.data;
+                        const login: UserPostRes[] = res.data;
                         if (res.status == 200) {
                           localStorage.clear();
                           // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อแก้ไขข้อมูล

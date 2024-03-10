@@ -16,15 +16,16 @@ import { ChangeEvent, useRef, useState } from "react";
 import { UserService } from "../../service/userService";
 
 function EditProfilePage() {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("objUser")!));
+  const navigate = useNavigate();
+  const userService = new UserService();
+
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("objUser")!)
+  );
 
   const emailRef = useRef<HTMLInputElement>();
   const passRef = useRef<HTMLInputElement>();
   const nameRef = useRef<HTMLInputElement>();
-
-  const userservice = new UserService();
-
-  const navigate = useNavigate();
 
   // dialog
   const [dialog, setDialog] = useState(false);
@@ -41,18 +42,18 @@ function EditProfilePage() {
     whiteSpace: "nowrap",
     width: 1,
   });
-  // const [file, setFile] = useState<File | null>(null);
 
+  // ทำงานเมื่อกดเปลี่ยนรูป avatar ของ user
   async function selectFile(event: ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
-      // setFile(event.target.files[0]);
       // แก้ไขรูป user
       console.log("Uploadding...");
-      const res = await userservice.avatar(event.target.files[0], user.uid);
+      const res = await userService.avatar(event.target.files[0], user.uid);
+      console.log("Success");
       // แก้ไขข้อมูลใน localstorage
       user.image = res.data["result"];
       localStorage.setItem("objUser", JSON.stringify(user));
-      setUser(JSON.parse(localStorage.getItem("objUser")!))
+      setUser(JSON.parse(localStorage.getItem("objUser")!));
     }
   }
 
@@ -136,7 +137,11 @@ function EditProfilePage() {
                           width: 20,
                         }}
                       />
-                      <VisuallyHiddenInput type="file" accept="image/*" onChange={selectFile} />
+                      <VisuallyHiddenInput
+                        type="file"
+                        accept="image/*"
+                        onChange={selectFile}
+                      />
                     </Button>
                   </div>
 
@@ -507,7 +512,7 @@ function EditProfilePage() {
                     emailRef.current?.value &&
                     passRef.current?.value
                   ) {
-                    const res = await userservice.update(
+                    const res = await userService.update(
                       user.uid,
                       nameRef.current?.value,
                       emailRef.current?.value,
