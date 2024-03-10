@@ -96,7 +96,7 @@ function ProfilePage() {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    border: "1px solid red",
+                    border: "2px solid white",
                   }}
                   image={user.image}
                 />
@@ -221,13 +221,12 @@ function ProfilePage() {
               display: "flex",
               marginLeft: "100px",
               marginTop: "50px",
-              border: "1px solid red",
             }}
           >
             <Grid container spacing={2}>
 
               {images.map((image, index) => (
-                <Grid item xs={2.3} key={index}>
+                <Grid item xs={2.4} key={index}>
                   <CardMedia
                     sx={{
                       height: 160,
@@ -236,13 +235,12 @@ function ProfilePage() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      border: "1px solid red",
                     }}
                     onClick={() => {}}
                     image={image.path}
                   />
                 </Grid>
-              ))}
+              ))}      
 
               {/* <Grid item xs={1.8}>
                 <div style={{ backgroundColor: "white", borderRadius: 15 }}>

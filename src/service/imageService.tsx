@@ -10,6 +10,21 @@ export class ImageService {
     return response;
   }
 
+  async insert(file: File, uid: string, name: string) {
+    const body = {
+      file: file,
+      uid: uid,
+      name: name
+    };
+    const url = HOST + `/upload`;
+    const response = await axios.post(url, body, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  }
+
   async random() {
     const url = HOST + `/random`;
     const response = await axios.get(url); 
@@ -19,6 +34,14 @@ export class ImageService {
   async getImagesByUid(uid: string) {
     const url = HOST + "/user/" + uid;
     const response = await axios.get(url);
+    console.log(response.data);
+    
+    return response;
+  }
+
+  async delete(mid: string) {
+    const url = HOST + "/" + mid;
+    const response = await axios.delete(url);
     console.log(response.data);
     
     return response;
