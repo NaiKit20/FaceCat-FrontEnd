@@ -28,6 +28,8 @@ export class ImageService {
   async random() {
     const url = HOST + `/random`;
     const response = await axios.get(url); 
+    console.log(response.data);
+    
     return response;
   }
 
@@ -43,6 +45,13 @@ export class ImageService {
     const url = HOST + "/" + mid;
     const response = await axios.delete(url);
     console.log(response.data);
+    
+    return response;
+  }
+
+  async vote(win:string, Wscore:string, lose:string, Lscore:string) {
+    const url = `http://localhost:3000/vote/${win}/${Wscore}/${lose}/${Lscore}`;
+    const response = await axios.post(url);
     
     return response;
   }
