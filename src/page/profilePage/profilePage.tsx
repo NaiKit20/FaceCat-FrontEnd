@@ -1,28 +1,34 @@
 import { Box } from "@mui/system";
-import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
+// import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import { Button, CardMedia, Grid, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import "./profilePage.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ImageService } from "../../service/imageService";
+import { ImageGetRes } from "../../model/Response/ImageGetRes";
 
 function ProfilePage() {
-  const user = JSON.parse(localStorage.getItem("objUser")!);
-  console.log(user);
-
   const navigate = useNavigate();
+  const imageService = new ImageService();
+
+  const user = JSON.parse(localStorage.getItem("objUser")!);
+  const [images, setImage] = useState<ImageGetRes[]>([]);
 
   function navigateToProfileEditPage() {
-    navigate("/ProfileEdit");
+    navigate("edit");
   }
 
   // InitState
   useEffect(() => {
     const loadDataAsync = async () => {
-      
+      const res = await imageService.getImagesByUid(user.uid);
+      const data: ImageGetRes[] = res.data;
+      setImage(data);
     };
     loadDataAsync();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   return (
     <>
       <Box
@@ -70,7 +76,7 @@ function ProfilePage() {
               flexDirection: "row",
               display: "flex",
               justifyContent: "space-between",
-              marginLeft: "100px",
+              marginLeft: "60px",
             }}
           >
             <div
@@ -90,8 +96,9 @@ function ProfilePage() {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
+                    border: "2px solid white",
                   }}
-                  image="src/img/profile.jpg"
+                  image={user.image}
                 />
               </div>
               <div
@@ -121,6 +128,7 @@ function ProfilePage() {
                     sx={{ m: 1, width: "40ch" }}
                     InputProps={{
                       sx: { borderRadius: "50px", bgcolor: "white" },
+                      readOnly: true,
                       startAdornment: (
                         <>
                           <h3>{user.name}</h3>
@@ -157,6 +165,7 @@ function ProfilePage() {
                     sx={{ m: 1, width: "40ch" }}
                     InputProps={{
                       sx: { borderRadius: "50px", bgcolor: "white" },
+                      readOnly: true,
                       startAdornment: (
                         <>
                           <h3>{user.email}</h3>
@@ -193,6 +202,7 @@ function ProfilePage() {
                     sx={{ m: 1, width: "40ch" }}
                     InputProps={{
                       sx: { borderRadius: "50px", bgcolor: "white" },
+                      readOnly: true,
                       startAdornment: (
                         <>
                           <h3>{user.pass}</h3>
@@ -209,67 +219,30 @@ function ProfilePage() {
             style={{
               flexDirection: "row",
               display: "flex",
-              // justifyContent: "space-between",
               marginLeft: "100px",
               marginTop: "50px",
             }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={2.3}>
-                <CardMedia
-                  sx={{
-                    height: 160,
-                    width: 160,
-                    borderRadius: 5,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  onClick={navigateToProfileEditPage}
-                  image="src/img/cat2.jpg"
-                />
-              </Grid>
 
-              <Grid item xs={2.3}>
-                <CardMedia
-                  sx={{
-                    height: 160,
-                    width: 160,
-                    borderRadius: 5,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  image="src/img/cat3.jpg"
-                />
-              </Grid>
-              <Grid item xs={2.3}>
-                <CardMedia
-                  sx={{
-                    height: 160,
-                    width: 160,
-                    borderRadius: 5,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  image="src/img/R.jpg"
-                />
-              </Grid>
-              <Grid item xs={2.3}>
-                <CardMedia
-                  sx={{
-                    height: 160,
-                    width: 160,
-                    borderRadius: 5,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  image="src/img/fox2.png"
-                />
-              </Grid>
-              <Grid item xs={1.8}>
+              {images.map((image, index) => (
+                <Grid item xs={2.4} key={index}>
+                  <CardMedia
+                    sx={{
+                      height: 160,
+                      width: 160,
+                      borderRadius: 5,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    onClick={() => {}}
+                    image={image.path}
+                  />
+                </Grid>
+              ))}      
+
+              {/* <Grid item xs={1.8}>
                 <div style={{ backgroundColor: "white", borderRadius: 15 }}>
                   <Box
                     sx={{
@@ -294,7 +267,8 @@ function ProfilePage() {
                     />
                   </Box>
                 </div>
-              </Grid>
+              </Grid> */}
+
             </Grid>
           </div>
         </div>

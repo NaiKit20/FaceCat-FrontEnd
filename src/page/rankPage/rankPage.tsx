@@ -25,6 +25,7 @@ function RankPage() {
       setImages(images);
     };
     loadDataAsync();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   return (
@@ -123,7 +124,7 @@ function RankPage() {
                                 alignItems: "center",
                                 ml: 3,
                               }}
-                              image={"http://localhost:3000/uploads/" + image.path}
+                              image={image.path}
                             />
                           </div>
                           <div style={{ flexGrow: 1, display: "flex" }}>
