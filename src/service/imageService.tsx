@@ -6,7 +6,6 @@ const HOST: string = "http://localhost:3000/image";
 export class ImageService {
   async getImages() {
     const response = await axios.get(HOST); 
-    console.log(response.data);
     
     return response;
   }
@@ -29,7 +28,6 @@ export class ImageService {
   async random() {
     const url = HOST + `/random`;
     const response = await axios.get(url); 
-    console.log(response.data);
     
     return response;
   }
@@ -37,7 +35,6 @@ export class ImageService {
   async getImagesByUid(uid: string) {
     const url = HOST + "/user/" + uid;
     const response = await axios.get(url);
-    console.log(response.data);
     
     return response;
   }
@@ -45,7 +42,6 @@ export class ImageService {
   async delete(mid: string) {
     const url = HOST + "/" + mid;
     const response = await axios.delete(url);
-    console.log(response.data);
     
     return response;
   }

@@ -377,6 +377,7 @@ function EditProfilePage() {
                           sx: { borderRadius: "30px", bgcolor: "white" },
                           readOnly: false,
                         }}
+                        placeholder="ใส่ชื่อก่อน!"
                       />
                       <Button
                         variant="contained"
