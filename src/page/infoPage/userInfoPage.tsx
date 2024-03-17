@@ -2,24 +2,33 @@ import { Box } from "@mui/system";
 // import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import { Button, CardMedia, Grid, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import "./profilePage.css";
 import { useEffect, useState } from "react";
 import { ImageService } from "../../service/imageService";
 import { ImageGetRes } from "../../model/Response/ImageGetRes";
+import { useParams } from "react-router-dom";
+import { UserService } from "../../service/userService";
+import { UserGetByIDReq } from "../../model/Response/UserGetByIdReq";
 
-function ProfilePage() {
+function UserInfoPage() {
+  const params = useParams();
   const navigate = useNavigate();
   const imageService = new ImageService();
+  const userService = new UserService();
 
-  const user = JSON.parse(localStorage.getItem("objUser")!);
+  const user:string = params.uid!;
   const [images, setImage] = useState<ImageGetRes[]>([]);
+  const [info, setInfo] = useState<UserGetByIDReq>();
 
   // InitState
   useEffect(() => {
     const loadDataAsync = async () => {
-      const res = await imageService.getImagesByUid(user.uid);
+      const res = await imageService.getImagesByUid(user);
       const data: ImageGetRes[] = res.data;
       setImage(data);
+
+      const resInfo = await userService.getByUid(user);
+      const dataInfo: UserGetByIDReq = resInfo.data;
+      setInfo(dataInfo);
     };
     loadDataAsync();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -94,7 +103,8 @@ function ProfilePage() {
                     alignItems: "center",
                     border: "2px solid white",
                   }}
-                  image={user.image}
+                  image={info?.image}
+                  component="img"
                 />
               </div>
               <div
@@ -127,81 +137,7 @@ function ProfilePage() {
                       readOnly: true,
                       startAdornment: (
                         <>
-                          <h3>{user.name}</h3>
-                        </>
-                      ),
-                    }}
-                  />
-                </div>
-              </div>
-              <div
-                style={{
-                  marginBottom: "20px",
-                  marginLeft: "20px",
-                }}
-              >
-                <div>
-                  <Typography
-                    gutterBottom
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      color: "black",
-                      ml: 2,
-                      fontFamily: "Mitr, sans-serif",
-                    }}
-                    variant="h5"
-                  >
-                    อีเมล
-                  </Typography>
-                </div>
-                <div>
-                  <TextField
-                    // placeholder="Gmail"
-                    sx={{ m: 1, width: "40ch" }}
-                    InputProps={{
-                      sx: { borderRadius: "50px", bgcolor: "white" },
-                      readOnly: true,
-                      startAdornment: (
-                        <>
-                          <h3>{user.email}</h3>
-                        </>
-                      ),
-                    }}
-                  />
-                </div>
-              </div>
-              <div
-                style={{
-                  marginBottom: "20px",
-                  marginLeft: "20px",
-                }}
-              >
-                <div>
-                  <Typography
-                    gutterBottom
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      color: "black",
-                      ml: 2,
-                      fontFamily: "Mitr, sans-serif",
-                    }}
-                    variant="h5"
-                  >
-                    รหัสผ่าน
-                  </Typography>
-                </div>
-                <div>
-                  <TextField
-                    // placeholder="Password"
-                    sx={{ m: 1, width: "40ch" }}
-                    InputProps={{
-                      sx: { borderRadius: "50px", bgcolor: "white" },
-                      readOnly: true,
-                      startAdornment: (
-                        <>
-                          <h3>{user.pass}</h3>
+                          <h3>{info?.name}</h3>
                         </>
                       ),
                     }}
@@ -217,10 +153,10 @@ function ProfilePage() {
               display: "flex",
               marginLeft: "100px",
               marginTop: "50px",
+              width: "1100px"
             }}
           >
             <Grid container spacing={2}>
-
               {images.map((image, index) => (
                 <Grid item xs={2.4} key={index}>
                   <CardMedia
@@ -231,15 +167,15 @@ function ProfilePage() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      border: "2px solid white"
+                      border: "2px solid white",
                     }}
                     onClick={() => {
-                      navigate(`${image.mid}`)
+                      navigate(`/home/profile/${image.mid}`);
                     }}
                     image={image.path}
                   />
                 </Grid>
-              ))}      
+              ))}
 
               {/* <Grid item xs={1.8}>
                 <div style={{ backgroundColor: "white", borderRadius: 15 }}>
@@ -267,7 +203,6 @@ function ProfilePage() {
                   </Box>
                 </div>
               </Grid> */}
-
             </Grid>
           </div>
         </div>
@@ -291,13 +226,15 @@ function ProfilePage() {
             mr: 2,
             fontFamily: "Mitr, sans-serif",
           }}
-          onClick={() => {navigate("edit")}}
+          onClick={() => {
+            navigate(-1);
+          }}
         >
-          แก้ไขข้อมูล
+          ย้อนกลับ
         </Button>
       </div>
     </>
   );
 }
 
-export default ProfilePage;
+export default UserInfoPage;

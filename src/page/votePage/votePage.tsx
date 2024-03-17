@@ -1,5 +1,11 @@
 import { Container, Box } from "@mui/system";
-import { CardMedia, Typography } from "@mui/material";
+import {
+  CardMedia,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Typography,
+} from "@mui/material";
 import "./votePage.css";
 import { useEffect, useState } from "react";
 import { ImageService } from "../../service/imageService";
@@ -8,6 +14,32 @@ import { RandomRes as ImageGetRes } from "../../model/Response/RandomRes";
 function VotePage() {
   const imageService = new ImageService();
   const [randomImages, setRandom] = useState<ImageGetRes[]>([]);
+  const [openDialog, setOpenDialog] = useState(false); // สถานะของ dialog
+
+  const [obj, setObj] = useState({
+    win: "",
+    wImg: "",
+    Ew: 0,
+    wScore: 0,
+    wSum: 0,
+    wNew: 0,
+    lose: "",
+    lImg: "",
+    El: 0,
+    lScore: 0,
+    lSum: 0,
+    lNew: 0,
+  });
+
+  // Function เปิด dialog
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  // Function ปิด dialog
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
   // สุ่มรูปภาพใหม่
   async function randomImage() {
@@ -15,12 +47,14 @@ function VotePage() {
     const images: ImageGetRes[] = response.data;
     setRandom(images);
   }
-
+  // คำนวนคะแนนการโหวต
   async function calScore(
     win: string,
+    wImg: string,
     Wname: string,
     Wscore: number,
     lose: string,
+    lImg: string,
     Lname: string,
     Lscore: number
   ) {
@@ -32,28 +66,20 @@ function VotePage() {
     const w: number = Math.floor(Wscore + K * (1 - Ew));
     const l: number = Math.floor(Lscore + K * (0 - El));
     // ผลการคำนวน
-    console.log(
-      Wname +
-        " ชนะ\nโดยมีค่าคาดหวังอยู่: " +
-        Ew +
-        "\nคะแนนเดิมมี: " +
-        Wscore +
-        "\nเพิ่ม: " +
-        (w - Wscore).toString() +
-        "\nคะแนนเพิ่มขึ้นเป็น: " +
-        w
-    );
-    console.log(
-      Lname +
-        " แพ้\nโดยมีค่าคาดหวังอยู่: " +
-        El +
-        "\nคะแนนเดิมมี: " +
-        Lscore +
-        "\nลด: " +
-        (l - Lscore).toString() +
-        "\nคะแนนลดลงเหลือ: " +
-        l
-    );
+    setObj({
+      win: Wname,
+      wImg: wImg,
+      Ew: Ew,
+      wScore: Wscore,
+      wSum: w - Wscore,
+      wNew: w,
+      lose: Lname,
+      lImg: lImg,
+      El: El,
+      lScore: Lscore,
+      lSum: l - Lscore,
+      lNew: l,
+    });
     // กำหนดไม้ให้ผู้แพ้ไม่มีคะแนนติดลบ โดยให้ลดได้จนถึง 0
     if (l < 0) {
       await imageService.vote(
@@ -70,6 +96,8 @@ function VotePage() {
         (l - Lscore).toString()
       );
     }
+    // แสดงผลการคำนวน
+    handleOpenDialog();
     // สุ่มรูปใหม่
     randomImage();
   }
@@ -125,18 +153,22 @@ function VotePage() {
                   if (index == 0) {
                     calScore(
                       randomImages[index].mid.toString(),
+                      randomImages[index].path,
                       randomImages[index].name,
                       randomImages[index].score,
                       randomImages[1].mid.toString(),
+                      randomImages[1].path,
                       randomImages[1].name,
                       randomImages[1].score
                     );
                   } else {
                     calScore(
                       randomImages[1].mid.toString(),
+                      randomImages[1].path,
                       randomImages[1].name,
                       randomImages[1].score,
                       randomImages[0].mid.toString(),
+                      randomImages[0].path,
                       randomImages[0].name,
                       randomImages[0].score
                     );
@@ -190,6 +222,92 @@ function VotePage() {
           </div>
         </Box>
       </Container>
+
+      {/* Dialog เมื่อโหวตสำเร็จ */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        onClick={() => handleCloseDialog()}
+      >
+        <DialogTitle>ผลลัพธ์</DialogTitle>
+        <DialogContent>
+          <div
+            style={{
+              display: "flex",
+              width: "500px",
+              height: "300px",
+            }}
+          >
+            <Box
+              sx={{
+                width: "50%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CardMedia
+                sx={{
+                  height: 100,
+                  width: 100,
+                  borderRadius: 100,
+                }}
+                component="img"
+                image={obj.wImg}
+              />
+              <h4
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {obj.win} (ชนะ)
+              </h4>
+              <br />
+              <p>ค่าคาดหวังคือ: {obj.Ew.toFixed(2)}</p>
+              <p>คะแนนเดิมมีอยู่: {obj.wScore}</p>
+              <p>ได้คะแนนเพิ่มขึ้น: {obj.wSum}</p>
+              <p>คะแนนใหม่ที่ได้คือ: {obj.wNew}</p>
+            </Box>
+            <hr />
+            <Box
+              sx={{
+                width: "50%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CardMedia
+                sx={{
+                  height: 100,
+                  width: 100,
+                  borderRadius: 100,
+                }}
+                component="img"
+                image={obj.lImg}
+              />
+              <h4
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {obj.lose} (แพ้)
+              </h4>
+              <br />
+              <p>ค่าคาดหวังคือ: {obj.El.toFixed(2)}</p>
+              <p>คะแนนเดิมมีอยู่: {obj.lScore}</p>
+              <p>คะแนนลดลง: {obj.lSum}</p>
+              {obj.lNew < 0 ? <p>คะแนนใหม่ที่ได้คือ: 0</p> : <p>คะแนนใหม่ที่ได้คือ: {obj.lNew}</p>}
+            </Box>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

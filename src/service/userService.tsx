@@ -1,8 +1,16 @@
 import axios from "axios";
 
+// eslint-disable-next-line react-refresh/only-export-components
 const HOST: string = "http://localhost:3000/user";
 
 export class UserService {
+  async getByUid(uid: string) {
+    const url = HOST + "/" + uid;
+    const response = await axios.get(url);
+    
+    return response;
+  }
+
   async register(name: string, email: string, pass: string) {
     const url = HOST + "/register";
     const body = {

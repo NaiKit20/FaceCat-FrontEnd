@@ -158,7 +158,7 @@ function LoginPage() {
                               "objUser",
                               JSON.stringify(user)
                             );
-                            navigate("/home/" + login[0].uid);
+                            navigate("/home");
                           } else {
                             // admin
                             navigate("/admin");
@@ -188,6 +188,24 @@ function LoginPage() {
                   หากยังไม่มีสมาชิกสมัครเลย
                   <Link to={"/register"} style={{ marginLeft: "10px" }}>
                     สมัครสมาชิก
+                  </Link>
+                </Typography>
+              </div>
+              <div>
+                <Typography
+                  gutterBottom
+                  sx={{
+                    fontFamily: "Mitr, sans-serif",
+                    marginTop: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  variant="body2"
+                >
+                  ยังไม่เป็นสมาชิกก็สามารถ
+                  <Link to={"/home"} style={{ marginLeft: "10px" }}>
+                    เยี่ยมชมเว็ปไซต์
                   </Link>
                 </Typography>
               </div>
