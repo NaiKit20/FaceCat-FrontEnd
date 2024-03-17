@@ -9,19 +9,29 @@ import ProfilePage from "./page/profilePage/profilePage";
 import EditProfilePage from "./page/editProfilePage/editProfilePage";
 import DetailImagePage from "./page/detailImagePage/detailImagePage";
 import UserInfoPage from "./page/infoPage/userInfoPage";
+import AdminUserPage from "./page/adminPage/adminUserPage";
 
 const routers = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
   { path: "/register", element: <RegisterPage /> },
-  { path: "/admin", element: <AdminPage /> },
+  { path: "/admin", element: <AdminPage />, 
+    children: [
+      { path: "/admin", element: <AdminUserPage /> },
+      { path: "/admin/info/:uid", element: <UserInfoPage /> },
+      { path: "/admin/info/:uid/img/:mid", element: <DetailImagePage /> },
+      { path: "/admin/rank", element: <RankPage /> },
+      { path: "/admin/rank/info/:uid", element: <UserInfoPage /> },
+      { path: "/admin/rank/info/:uid/img/:mid", element: <DetailImagePage /> },
+  ] },
   { path: "/home", element: <HomePage />, 
     children: [
       { path: "/home", element: <VotePage /> },
       { path: "/home/rank", element: <RankPage /> },
       { path: "/home/profile", element: <ProfilePage /> },
       { path: "/home/profile/:mid", element: <DetailImagePage /> },
+      { path: "/home/rank/info/:uid/img/:mid", element: <DetailImagePage /> },
       { path: "/home/profile/edit", element: <EditProfilePage /> },
-      { path: "/home/profile/info/:uid", element: <UserInfoPage /> },
+      { path: "/home/rank/info/:uid", element: <UserInfoPage /> },
     ]},
 ]);
 

@@ -58,7 +58,7 @@ function VotePage() {
     Lname: string,
     Lscore: number
   ) {
-    const K: number = 10;
+    const K: number = 20;
     // ค่าคาดหวัดผลลัพธ์
     const Ew: number = 1 / (1 + 10 ** ((Lscore - Wscore) / 400));
     const El: number = 1 / (1 + 10 ** ((Wscore - Lscore) / 400));

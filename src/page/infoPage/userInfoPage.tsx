@@ -170,39 +170,12 @@ function UserInfoPage() {
                       border: "2px solid white",
                     }}
                     onClick={() => {
-                      navigate(`/home/profile/${image.mid}`);
+                      navigate(`img/${image.mid}`);
                     }}
                     image={image.path}
                   />
                 </Grid>
               ))}
-
-              {/* <Grid item xs={1.8}>
-                <div style={{ backgroundColor: "white", borderRadius: 15 }}>
-                  <Box
-                    sx={{
-                      height: 160,
-                      width: 160,
-                      borderRadius: 5,
-                      borderColor: "white",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <AddPhotoAlternateOutlinedIcon
-                      sx={{
-                        height: 100,
-                        width: 100,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginLeft: "10px",
-                      }}
-                    />
-                  </Box>
-                </div>
-              </Grid> */}
             </Grid>
           </div>
         </div>

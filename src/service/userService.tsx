@@ -4,6 +4,13 @@ import axios from "axios";
 const HOST: string = "http://localhost:3000/user";
 
 export class UserService {
+  async getAll() {
+    const url = HOST + "/all";
+    const response = await axios.get(url);
+    
+    return response;
+  }
+
   async getByUid(uid: string) {
     const url = HOST + "/" + uid;
     const response = await axios.get(url);

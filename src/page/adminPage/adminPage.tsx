@@ -1,7 +1,11 @@
+import { Outlet } from "react-router-dom";
+import HeaderAdmin from "../../component/Header-Admin";
+
 function AdminPage() {
     return (
         <>
-        AdminPage
+        <HeaderAdmin></HeaderAdmin>
+        <Outlet />
         </>
     )
 }
