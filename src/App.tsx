@@ -7,17 +7,19 @@ import VotePage from "./page/votePage/votePage";
 import RankPage from "./page/rankPage/rankPage";
 import ProfilePage from "./page/profilePage/profilePage";
 import EditProfilePage from "./page/editProfilePage/editProfilePage";
+import DetailImagePage from "./page/detailImagePage/detailImagePage";
 
 const routers = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
   { path: "/register", element: <RegisterPage /> },
   { path: "/admin", element: <AdminPage /> },
-  { path: "/home/:id", element: <HomePage />, 
+  { path: "/home", element: <HomePage />, 
     children: [
-      { path: "/home/:id", element: <VotePage /> },
-      { path: "/home/:id/rank", element: <RankPage /> },
-      { path: "/home/:id/profile", element: <ProfilePage /> },
-      { path: "/home/:id/profile/edit", element: <EditProfilePage /> },
+      { path: "/home", element: <VotePage /> },
+      { path: "/home/rank", element: <RankPage /> },
+      { path: "/home/profile", element: <ProfilePage /> },
+      { path: "/home/profile/:mid", element: <DetailImagePage /> },
+      { path: "/home/profile/edit", element: <EditProfilePage /> },
     ]},
 ]);
 

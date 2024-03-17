@@ -14,10 +14,6 @@ function ProfilePage() {
   const user = JSON.parse(localStorage.getItem("objUser")!);
   const [images, setImage] = useState<ImageGetRes[]>([]);
 
-  function navigateToProfileEditPage() {
-    navigate("edit");
-  }
-
   // InitState
   useEffect(() => {
     const loadDataAsync = async () => {
@@ -235,8 +231,11 @@ function ProfilePage() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
+                      border: "2px solid white"
                     }}
-                    onClick={() => {}}
+                    onClick={() => {
+                      navigate(`${image.mid}`)
+                    }}
                     image={image.path}
                   />
                 </Grid>
@@ -292,7 +291,7 @@ function ProfilePage() {
             mr: 2,
             fontFamily: "Mitr, sans-serif",
           }}
-          onClick={navigateToProfileEditPage}
+          onClick={() => {navigate("edit")}}
         >
           แก้ไขข้อมูล
         </Button>

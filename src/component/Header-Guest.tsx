@@ -3,16 +3,13 @@ import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/cat.png";
 
-function Header() {
+function HeaderGuest() {
   // const user = JSON.parse(localStorage.getItem("objUser")!);
   const navigate = useNavigate();
 
   function navigateToLoginPage() {
     localStorage.clear();
     navigate("/");
-  }
-  function navigateToProfilePage() {
-    navigate(`/home/profile`);
   }
   function navigateToVotePage() {
     navigate(`/home`);
@@ -78,21 +75,6 @@ function Header() {
               Face Cat
             </Typography>
           </div>
-          {/* <Button
-            variant="contained"
-            style={{ backgroundColor: "white" }}
-            sx={{
-              width: "8pc",
-              color: "black",
-              fontWeight: "Bold",
-              borderRadius: 3,
-              mr: 2,
-              fontFamily: "Mitr, sans-serif",
-            }}
-            onClick={navigateToAdminPage}
-          >
-            สลับ
-          </Button> */}
           <Button
             variant="contained"
             style={{ backgroundColor: "white" }}
@@ -107,21 +89,6 @@ function Header() {
             onClick={navigateToVotePage}
           >
             หน้าแรก
-          </Button>
-          <Button
-            variant="contained"
-            style={{ backgroundColor: "white" }}
-            sx={{
-              width: "8pc",
-              color: "black",
-              fontWeight: "Bold",
-              borderRadius: 3,
-              mr: 2,
-              fontFamily: "Mitr, sans-serif",
-            }}
-            onClick={navigateToProfilePage}
-          >
-            ข้อมูลส่วนตัว
           </Button>
           <Button
             variant="contained"
@@ -150,7 +117,7 @@ function Header() {
             }}
             onClick={navigateToLoginPage}
           >
-            ล็อกเอาท์
+            ล็อกอิน
           </Button>
         </Toolbar>
       </AppBar>
@@ -158,4 +125,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default HeaderGuest;

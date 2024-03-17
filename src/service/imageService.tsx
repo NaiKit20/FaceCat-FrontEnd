@@ -10,6 +10,14 @@ export class ImageService {
     return response;
   }
 
+  async rankImages() {
+    const url = HOST + `/rank`;
+    const response = await axios.get(url); 
+    console.log(response);
+    
+    return response;
+  }
+
   async insert(file: File, uid: string, name: string) {
     const body = {
       file: file,
