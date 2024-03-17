@@ -30,7 +30,7 @@ function RankPage() {
   
   return (
     <>
-      <Container fixed sx={{ border: "1px solid red", display: "flex", justifyContent: "space-between", width: "120%"}}>
+      <Container fixed sx={{ display: "flex", justifyContent: "space-between", width: "120%"}}>
         <Box
           display={"flex"}
           flexDirection={"column"}
@@ -80,7 +80,7 @@ function RankPage() {
                 }}
               >
                 <TableBody >
-                  {rank?.today.map((image, index) => (
+                  {rank?.today.slice(0, 10).map((image, index) => (
                     
                     <TableRow key={index} >
                       <TableCell>
@@ -250,7 +250,7 @@ function RankPage() {
                 }}
               >
                 <TableBody >
-                  {rank?.yesterday.map((image, index) => (
+                  {rank?.yesterday.slice(0, 10).map((image, index) => (
                     
                     <TableRow key={index} >
                       <TableCell>

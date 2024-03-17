@@ -13,7 +13,6 @@ export class ImageService {
   async rankImages() {
     const url = HOST + `/rank`;
     const response = await axios.get(url); 
-    console.log(response);
     
     return response;
   }
