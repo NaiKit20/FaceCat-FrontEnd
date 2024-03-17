@@ -91,7 +91,7 @@ function RankPage() {
                       <TableCell
                         onClick={() => {
                           if (user != null) {
-                            navigate(`/home/profile/info/${image.uid}`);
+                            navigate(`info/${image.uid}`);
                           }
                         }}
                       >
@@ -270,7 +270,7 @@ function RankPage() {
                       <TableCell
                         onClick={() => {
                           if (user != null) {
-                            navigate(`/home/profile/info/${image.uid}`);
+                            navigate(`info/${image.uid}`);
                           }
                         }}
                       >

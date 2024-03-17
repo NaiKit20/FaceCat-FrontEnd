@@ -161,6 +161,19 @@ function LoginPage() {
                             navigate("/home");
                           } else {
                             // admin
+                            // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อแก้ไขข้อมูล
+                            localStorage.clear();
+                            const user = {
+                              uid: login[0].uid,
+                              email: login[0].email,
+                              pass: passRef.current.value,
+                              image: login[0].image,
+                              name: login[0].name,
+                            };
+                            localStorage.setItem(
+                              "objUser",
+                              JSON.stringify(user)
+                            );
                             navigate("/admin");
                           }
                         }
