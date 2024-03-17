@@ -13,10 +13,13 @@ import "./rankPage.css";
 import { useEffect, useState } from "react";
 import { ImageService } from "../../service/imageService";
 import { RankTodayYestRes } from "../../model/Response/RankTodayYestRes";
+import { useNavigate } from "react-router-dom";
 
 function RankPage() {
   const imageService = new ImageService();
   const [rank, setRank] = useState<RankTodayYestRes>();
+  const user = JSON.parse(localStorage.getItem("objUser")!);
+  const navigate = useNavigate();
   // InitState
   useEffect(() => {
     const loadDataAsync = async () => {
@@ -25,12 +28,15 @@ function RankPage() {
       setRank(ranks);
     };
     loadDataAsync();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   return (
     <>
-      <Container fixed sx={{ display: "flex", justifyContent: "space-between", width: "120%"}}>
+      <Container
+        fixed
+        sx={{ display: "flex", justifyContent: "space-between", width: "120%" }}
+      >
         <Box
           display={"flex"}
           flexDirection={"column"}
@@ -65,7 +71,7 @@ function RankPage() {
               วันนี้
             </Typography>
           </div>
-          <div >
+          <div>
             <TableContainer
               style={{
                 maxHeight: 450,
@@ -79,11 +85,16 @@ function RankPage() {
                   justifyContent: "center",
                 }}
               >
-                <TableBody >
+                <TableBody>
                   {rank?.today.slice(0, 10).map((image, index) => (
-                    
-                    <TableRow key={index} >
-                      <TableCell>
+                    <TableRow key={index}>
+                      <TableCell
+                        onClick={() => {
+                          if (user != null) {
+                            navigate(`/home/profile/info/${image.uid}`);
+                          }
+                        }}
+                      >
                         <Box
                           display={"flex"}
                           flexDirection={"row"}
@@ -172,7 +183,11 @@ function RankPage() {
                               }}
                               variant="h3"
                             >
-                              <FavoriteIcon color="error" fontSize="inherit" sx={{fontSize: "40px"}} />
+                              <FavoriteIcon
+                                color="error"
+                                fontSize="inherit"
+                                sx={{ fontSize: "40px" }}
+                              />
                             </Typography>
                           </div>
                           <div style={{ display: "flex" }}>
@@ -235,7 +250,7 @@ function RankPage() {
               เมื่อวาน
             </Typography>
           </div>
-          <div >
+          <div>
             <TableContainer
               style={{
                 maxHeight: 450,
@@ -249,11 +264,16 @@ function RankPage() {
                   justifyContent: "center",
                 }}
               >
-                <TableBody >
+                <TableBody>
                   {rank?.yesterday.slice(0, 10).map((image, index) => (
-                    
-                    <TableRow key={index} >
-                      <TableCell>
+                    <TableRow key={index}>
+                      <TableCell
+                        onClick={() => {
+                          if (user != null) {
+                            navigate(`/home/profile/info/${image.uid}`);
+                          }
+                        }}
+                      >
                         <Box
                           display={"flex"}
                           flexDirection={"row"}
@@ -325,9 +345,7 @@ function RankPage() {
                                 mr: 2,
                               }}
                               variant="h4"
-                            >
-                              
-                            </Typography>
+                            ></Typography>
                           </div>
                           <div style={{ display: "flex" }}>
                             <Typography
@@ -342,7 +360,11 @@ function RankPage() {
                               }}
                               variant="h3"
                             >
-                              <FavoriteIcon color="error" fontSize="inherit" sx={{fontSize: "40px"}} />
+                              <FavoriteIcon
+                                color="error"
+                                fontSize="inherit"
+                                sx={{ fontSize: "40px" }}
+                              />
                             </Typography>
                           </div>
                           <div style={{ display: "flex" }}>

@@ -303,7 +303,7 @@ function VotePage() {
               <p>ค่าคาดหวังคือ: {obj.El.toFixed(2)}</p>
               <p>คะแนนเดิมมีอยู่: {obj.lScore}</p>
               <p>คะแนนลดลง: {obj.lSum}</p>
-              <p>คะแนนใหม่ที่ได้คือ: {obj.lNew}</p>
+              {obj.lNew < 0 ? <p>คะแนนใหม่ที่ได้คือ: 0</p> : <p>คะแนนใหม่ที่ได้คือ: {obj.lNew}</p>}
             </Box>
           </div>
         </DialogContent>

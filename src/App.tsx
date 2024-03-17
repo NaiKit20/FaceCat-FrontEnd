@@ -8,6 +8,7 @@ import RankPage from "./page/rankPage/rankPage";
 import ProfilePage from "./page/profilePage/profilePage";
 import EditProfilePage from "./page/editProfilePage/editProfilePage";
 import DetailImagePage from "./page/detailImagePage/detailImagePage";
+import UserInfoPage from "./page/infoPage/userInfoPage";
 
 const routers = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
@@ -20,6 +21,7 @@ const routers = createBrowserRouter([
       { path: "/home/profile", element: <ProfilePage /> },
       { path: "/home/profile/:mid", element: <DetailImagePage /> },
       { path: "/home/profile/edit", element: <EditProfilePage /> },
+      { path: "/home/profile/info/:uid", element: <UserInfoPage /> },
     ]},
 ]);
 
