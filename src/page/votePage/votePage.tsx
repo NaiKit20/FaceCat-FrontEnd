@@ -13,10 +13,40 @@ import { RandomRes as ImageGetRes } from "../../model/Response/RandomRes";
 
 function VotePage() {
   const imageService = new ImageService();
+  const user = JSON.parse(localStorage.getItem("objUser")!);
   const [randomImages, setRandom] = useState<ImageGetRes[]>([]);
   const [openDialog, setOpenDialog] = useState(false); // สถานะของ dialog
 
-  const [obj, setObj] = useState({
+  // ตั้งเวลาในการกดโหวตรูปภาพ
+  function vote(uid: string, mid: string, date: string) {
+    // console.log(localStorage.getItem(`${uid}:${mid}`));
+
+    // เวลาปัจจุบัน
+    const time = new Date().toLocaleTimeString(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+
+    // เช็คว่า uid กดโหวต mid นี้หรือยัง
+    if (localStorage.getItem(`${uid}:${mid}`) == null) {
+      localStorage.setItem(`${uid}:${mid}`, date.toString());
+    } else {
+      // ถ้ากดโหวตแล้วเช็คว่าเวลาที่โหวตสามารถกดได้อีกหรือไม่
+      if (time > localStorage.getItem(`${uid}:${mid}`)!) {
+        localStorage.removeItem(`${uid}:${mid}`);
+        localStorage.setItem(`${uid}:${mid}`, date.toString());
+      } else {
+        console.log("ยังโหวตรูปนี้ไม่ได้");
+      }
+    }
+    // setTimeout(() => {
+    //   localStorage.removeItem(`${uid}:${mid}`);
+    //   console.log(`${uid}:${mid}` + localStorage.getItem(`${uid}:${mid}`));
+    // }, sec * 1000);
+  }
+
+  const [objCal, setObjCal] = useState({
     win: "",
     wImg: "",
     Ew: 0,
@@ -66,7 +96,7 @@ function VotePage() {
     const w: number = Math.floor(Wscore + K * (1 - Ew));
     const l: number = Math.floor(Lscore + K * (0 - El));
     // ผลการคำนวน
-    setObj({
+    setObjCal({
       win: Wname,
       wImg: wImg,
       Ew: Ew,
@@ -81,25 +111,78 @@ function VotePage() {
       lNew: l,
     });
     // กำหนดไม้ให้ผู้แพ้ไม่มีคะแนนติดลบ โดยให้ลดได้จนถึง 0
-    if (l < 0) {
-      await imageService.vote(
-        win,
-        (w - Wscore).toString(),
-        lose,
-        (Lscore * -1).toString()
-      );
-    } else {
-      await imageService.vote(
-        win,
-        (w - Wscore).toString(),
-        lose,
-        (l - Lscore).toString()
-      );
-    }
+    // if (l < 0) {
+    //   await imageService.vote(
+    //     win,
+    //     (w - Wscore).toString(),
+    //     lose,
+    //     (Lscore * -1).toString()
+    //   );
+    // } else {
+    //   await imageService.vote(
+    //     win,
+    //     (w - Wscore).toString(),
+    //     lose,
+    //     (l - Lscore).toString()
+    //   );
+    // }
     // แสดงผลการคำนวน
     handleOpenDialog();
     // สุ่มรูปใหม่
     randomImage();
+
+    // test
+    if (user != null) {
+      const time = new Date(
+        new Date().getTime() + 10 * 1000
+      ).toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      vote(user.uid, win, time);
+      // console.log(
+      //   new Date().toLocaleTimeString(undefined, {
+      //     hour: "2-digit",
+      //     minute: "2-digit",
+      //     second: "2-digit",
+      //   })
+      // );
+    } else {
+      const time = new Date(
+        new Date().getTime() + 20 * 1000
+      ).toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      vote("null", win, time);
+      // console.log(
+      //   new Date().toLocaleTimeString(undefined, {
+      //     hour: "2-digit",
+      //     minute: "2-digit",
+      //     second: "2-digit",
+      //   })
+      // );
+    }
+
+    //   if (user != null) {
+    //     // user ได้ login เข้าระบบ
+    //     if (localStorage.getItem(`${user.uid}:${win}`) == null) {
+    //       // user ยังไม่ได้โหวตรูปนี้ภายในเวลาที่กำหนด
+    //       vote(user.uid, win, 5);
+    //     } else {
+    //       console.log("ยังกดไม่ได้");
+    //     }
+    //   } else {
+    //     // user ไม่ได้ login เข้าระบบ
+    //     if (localStorage.getItem(`null:${win}`) == null) {
+    //       // user ยังไม่ได้โหวตรูปนี้ภายในเวลาที่กำหนด
+    //       vote("null", win, 5);
+    //     } else {
+    //       console.log("ยังกดไม่ได้");
+    //     }
+    //   }
   }
 
   // InitState
@@ -254,7 +337,7 @@ function VotePage() {
                   borderRadius: 100,
                 }}
                 component="img"
-                image={obj.wImg}
+                image={objCal.wImg}
               />
               <h4
                 style={{
@@ -263,13 +346,13 @@ function VotePage() {
                   textOverflow: "ellipsis",
                 }}
               >
-                {obj.win} (ชนะ)
+                {objCal.win} (ชนะ)
               </h4>
               <br />
-              <p>ค่าคาดหวังคือ: {obj.Ew.toFixed(2)}</p>
-              <p>คะแนนเดิมมีอยู่: {obj.wScore}</p>
-              <p>ได้คะแนนเพิ่มขึ้น: {obj.wSum}</p>
-              <p>คะแนนใหม่ที่ได้คือ: {obj.wNew}</p>
+              <p>ค่าคาดหวังคือ: {objCal.Ew.toFixed(2)}</p>
+              <p>คะแนนเดิมมีอยู่: {objCal.wScore}</p>
+              <p>ได้คะแนนเพิ่มขึ้น: {objCal.wSum}</p>
+              <p>คะแนนใหม่ที่ได้คือ: {objCal.wNew}</p>
             </Box>
             <hr />
             <Box
@@ -288,7 +371,7 @@ function VotePage() {
                   borderRadius: 100,
                 }}
                 component="img"
-                image={obj.lImg}
+                image={objCal.lImg}
               />
               <h4
                 style={{
@@ -297,13 +380,17 @@ function VotePage() {
                   textOverflow: "ellipsis",
                 }}
               >
-                {obj.lose} (แพ้)
+                {objCal.lose} (แพ้)
               </h4>
               <br />
-              <p>ค่าคาดหวังคือ: {obj.El.toFixed(2)}</p>
-              <p>คะแนนเดิมมีอยู่: {obj.lScore}</p>
-              <p>คะแนนลดลง: {obj.lSum}</p>
-              {obj.lNew < 0 ? <p>คะแนนใหม่ที่ได้คือ: 0</p> : <p>คะแนนใหม่ที่ได้คือ: {obj.lNew}</p>}
+              <p>ค่าคาดหวังคือ: {objCal.El.toFixed(2)}</p>
+              <p>คะแนนเดิมมีอยู่: {objCal.lScore}</p>
+              <p>คะแนนลดลง: {objCal.lSum}</p>
+              {objCal.lNew < 0 ? (
+                <p>คะแนนใหม่ที่ได้คือ: 0</p>
+              ) : (
+                <p>คะแนนใหม่ที่ได้คือ: {objCal.lNew}</p>
+              )}
             </Box>
           </div>
         </DialogContent>
