@@ -9,43 +9,14 @@ import {
 import "./votePage.css";
 import { useEffect, useState } from "react";
 import { ImageService } from "../../service/imageService";
-import { RandomRes as ImageGetRes } from "../../model/Response/RandomRes";
+import { Random, RandomImageRes } from "../../model/Response/RandomImageRes";
 
 function VotePage() {
   const imageService = new ImageService();
   const user = JSON.parse(localStorage.getItem("objUser")!);
-  const [randomImages, setRandom] = useState<ImageGetRes[]>([]);
+  const [randomImages, setRandom] = useState<RandomImageRes>();
+  const [random, setRan] = useState<Random[]>([]);
   const [openDialog, setOpenDialog] = useState(false); // สถานะของ dialog
-
-  // ตั้งเวลาในการกดโหวตรูปภาพ
-  function vote(uid: string, mid: string, date: string) {
-    // console.log(localStorage.getItem(`${uid}:${mid}`));
-
-    // เวลาปัจจุบัน
-    const time = new Date().toLocaleTimeString(undefined, {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-
-    // เช็คว่า uid กดโหวต mid นี้หรือยัง
-    if (localStorage.getItem(`${uid}:${mid}`) == null) {
-      localStorage.setItem(`${uid}:${mid}`, date.toString());
-    } else {
-      // ถ้ากดโหวตแล้วเช็คว่าเวลาที่โหวตสามารถกดได้อีกหรือไม่
-      if (time > localStorage.getItem(`${uid}:${mid}`)!) {
-        localStorage.removeItem(`${uid}:${mid}`);
-        localStorage.setItem(`${uid}:${mid}`, date.toString());
-      } else {
-        console.log("ยังโหวตรูปนี้ไม่ได้");
-      }
-    }
-    // setTimeout(() => {
-    //   localStorage.removeItem(`${uid}:${mid}`);
-    //   console.log(`${uid}:${mid}` + localStorage.getItem(`${uid}:${mid}`));
-    // }, sec * 1000);
-  }
-
   const [objCal, setObjCal] = useState({
     win: "",
     wImg: "",
@@ -61,6 +32,11 @@ function VotePage() {
     lNew: 0,
   });
 
+  // บันทึกข้อมูลการกดโหวตลงใน localstorage ว่า uid กดโหวต mid ไหนและเวลาที่สามารถกดได้อีก
+  function vote(uid: string, mid: string, date: string) {
+    localStorage.setItem(`${uid}:${mid}`, date.toString());
+  }
+
   // Function เปิด dialog
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -73,10 +49,59 @@ function VotePage() {
 
   // สุ่มรูปภาพใหม่
   async function randomImage() {
+    // เก็บค่าข้อมูลที่จะสุ่ม
+    const data: Random[] = [];
+    // เวลาปัจจุบัน
+    const time = new Date().toLocaleTimeString(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    // ดึงข้อมูลรูปภาพทั้งหมดที่จะนำมาสุ่ม
     const response = await imageService.random();
-    const images: ImageGetRes[] = response.data;
+    const images: RandomImageRes = response.data;
     setRandom(images);
+    // เก็บรูปภาพที่ยังไม่ถูกโหวต
+    images.random.forEach((image) => {
+      // user login
+      if (user != null) {
+        // เช็คว่ารูปที่ i ถูกโหวตหรือยัง
+        if (localStorage.getItem(`${user.uid}:${image.mid}`) != null) {
+          if (time > localStorage.getItem(`${user.uid}:${image.mid}`)!) {
+            // รูปที่ i นั้นกดโหวตไปแล้ว แต่ถึงเวลาที่สามารถโหวตได้อีก จึงลบข้อมูลการกดโหวตออก
+            localStorage.removeItem(`${user.uid}:${image.mid}`);
+          }
+        } else {
+          // รูปภาพที่ยังไม่กดโหวต
+          data.push(image);
+        }
+      } else {
+        // เช็คว่ารูปที่ i ถูกโหวตหรือยัง
+        if (localStorage.getItem(`null:${image.mid}`) != null) {
+          if (time > localStorage.getItem(`null:${image.mid}`)!) {
+            // รูปที่ i นั้นกดโหวตไปแล้ว แต่ถึงเวลาที่สามารถโหวตได้อีก จึงลบข้อมูลการกดโหวตออก
+            localStorage.removeItem(`null:${image.mid}`);
+          }
+        } else {
+          // รูปภาพที่ยังไม่กดโหวต
+          data.push(image);
+        }
+      }
+    });
+    // สุ่มรูปภาพ
+    const image1: Random = data[Math.floor(Math.random() * data.length)];
+    let image2: Random = data[Math.floor(Math.random() * data.length)];
+    // สุ่มอีกรูปใหม่จนกว่ารูปทั้ง2 ไม่ใช่รูปของคนคนเดียวกัน
+    if (data.length > 1) {
+      while (image1.mid == image2.mid) {
+        image2 = data[Math.floor(Math.random() * data.length)];
+      }
+      setRan([image1, image2]);
+    } else {
+      setRan([]);
+    }
   }
+
   // คำนวนคะแนนการโหวต
   async function calScore(
     win: string,
@@ -111,86 +136,51 @@ function VotePage() {
       lNew: l,
     });
     // กำหนดไม้ให้ผู้แพ้ไม่มีคะแนนติดลบ โดยให้ลดได้จนถึง 0
-    // if (l < 0) {
-    //   await imageService.vote(
-    //     win,
-    //     (w - Wscore).toString(),
-    //     lose,
-    //     (Lscore * -1).toString()
-    //   );
-    // } else {
-    //   await imageService.vote(
-    //     win,
-    //     (w - Wscore).toString(),
-    //     lose,
-    //     (l - Lscore).toString()
-    //   );
-    // }
+    if (l < 0) {
+      await imageService.vote(
+        win,
+        (w - Wscore).toString(),
+        lose,
+        (Lscore * -1).toString()
+      );
+    } else {
+      await imageService.vote(
+        win,
+        (w - Wscore).toString(),
+        lose,
+        (l - Lscore).toString()
+      );
+    }
     // แสดงผลการคำนวน
     handleOpenDialog();
-    // สุ่มรูปใหม่
-    randomImage();
-
-    // test
+    // บันทึกว่า uid กดโหวต mid ไหนโดยบันทึกเวลาบอกด้วยว่าสามารถกดโหวตได้อีกตอนไหน
     if (user != null) {
       const time = new Date(
-        new Date().getTime() + 10 * 1000
+        new Date().getTime() + randomImages!.limit * 1000
       ).toLocaleTimeString(undefined, {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
       });
       vote(user.uid, win, time);
-      // console.log(
-      //   new Date().toLocaleTimeString(undefined, {
-      //     hour: "2-digit",
-      //     minute: "2-digit",
-      //     second: "2-digit",
-      //   })
-      // );
     } else {
       const time = new Date(
-        new Date().getTime() + 20 * 1000
+        new Date().getTime() + randomImages!.limit * 1000
       ).toLocaleTimeString(undefined, {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
       });
       vote("null", win, time);
-      // console.log(
-      //   new Date().toLocaleTimeString(undefined, {
-      //     hour: "2-digit",
-      //     minute: "2-digit",
-      //     second: "2-digit",
-      //   })
-      // );
     }
-
-    //   if (user != null) {
-    //     // user ได้ login เข้าระบบ
-    //     if (localStorage.getItem(`${user.uid}:${win}`) == null) {
-    //       // user ยังไม่ได้โหวตรูปนี้ภายในเวลาที่กำหนด
-    //       vote(user.uid, win, 5);
-    //     } else {
-    //       console.log("ยังกดไม่ได้");
-    //     }
-    //   } else {
-    //     // user ไม่ได้ login เข้าระบบ
-    //     if (localStorage.getItem(`null:${win}`) == null) {
-    //       // user ยังไม่ได้โหวตรูปนี้ภายในเวลาที่กำหนด
-    //       vote("null", win, 5);
-    //     } else {
-    //       console.log("ยังกดไม่ได้");
-    //     }
-    //   }
+    // สุ่มรูปใหม่
+    randomImage();
   }
 
   // InitState
   useEffect(() => {
     const loadDataAsync = async () => {
-      const response = await imageService.random();
-      const images: ImageGetRes[] = response.data;
-      setRandom(images);
+      randomImage();
     };
     loadDataAsync();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -229,31 +219,31 @@ function VotePage() {
             }}
           >
             {/* สุ่มรูปภาพมาแสดงผล */}
-            {randomImages.map((image, index) => (
+            {random?.map((image, index) => (
               <div
                 key={index}
                 onClick={() => {
                   if (index == 0) {
                     calScore(
-                      randomImages[index].mid.toString(),
-                      randomImages[index].path,
-                      randomImages[index].name,
-                      randomImages[index].score,
-                      randomImages[1].mid.toString(),
-                      randomImages[1].path,
-                      randomImages[1].name,
-                      randomImages[1].score
+                      random[index].mid.toString(),
+                      random[index].path,
+                      random[index].name,
+                      random[index].score,
+                      random[1].mid.toString(),
+                      random[1].path,
+                      random[1].name,
+                      random[1].score
                     );
                   } else {
                     calScore(
-                      randomImages[1].mid.toString(),
-                      randomImages[1].path,
-                      randomImages[1].name,
-                      randomImages[1].score,
-                      randomImages[0].mid.toString(),
-                      randomImages[0].path,
-                      randomImages[0].name,
-                      randomImages[0].score
+                      random[1].mid.toString(),
+                      random[1].path,
+                      random[1].name,
+                      random[1].score,
+                      random[0].mid.toString(),
+                      random[0].path,
+                      random[0].name,
+                      random[0].score
                     );
                   }
                 }}

@@ -8,7 +8,7 @@ function Header() {
   const navigate = useNavigate();
 
   function navigateToLoginPage() {
-    localStorage.clear();
+    localStorage.removeItem("objUser");
     navigate("/");
   }
   function navigateToProfilePage() {

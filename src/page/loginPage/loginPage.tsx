@@ -146,7 +146,7 @@ function LoginPage() {
                           if (login[0].type < 1) {
                             // user
                             // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อแก้ไขข้อมูล
-                            localStorage.clear();
+                            localStorage.removeItem("objUser");
                             const user = {
                               uid: login[0].uid,
                               email: login[0].email,
@@ -162,7 +162,7 @@ function LoginPage() {
                           } else {
                             // admin
                             // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อแก้ไขข้อมูล
-                            localStorage.clear();
+                            localStorage.removeItem("objUser");
                             const user = {
                               uid: login[0].uid,
                               email: login[0].email,

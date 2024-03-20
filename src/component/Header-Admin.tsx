@@ -8,7 +8,7 @@ function Header_Admin() {
   const navigate = useNavigate();
 
   function navigateToLoginPage() {
-    localStorage.clear();
+    localStorage.removeItem("objUser");
     navigate("/");
   }
   function navigateToUserAllPage() {
