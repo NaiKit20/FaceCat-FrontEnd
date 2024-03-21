@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-refresh/only-export-components
-const HOST: string = "http://localhost:3000/image";
+const HOST: string = "https://facecat-backend.onrender.com/image";
 
 export class ImageService {
   async getImages() {

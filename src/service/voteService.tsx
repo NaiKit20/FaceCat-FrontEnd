@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const HOST: string = "http://localhost:3000/vote";
+const HOST: string = "https://facecat-backend.onrender.com/vote";
 
 export class VoteService {
   async calScore(mid: string) {
