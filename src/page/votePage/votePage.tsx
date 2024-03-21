@@ -1,6 +1,7 @@
 import { Container, Box } from "@mui/system";
 import {
   CardMedia,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -211,88 +212,101 @@ function VotePage() {
           >
             คุณชอบอะไร?
           </Typography>
-          <div
-            style={{
-              width: "900px",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            {/* สุ่มรูปภาพมาแสดงผล */}
-            {random?.map((image, index) => (
-              <div
-                key={index}
-                onClick={() => {
-                  if (index == 0) {
-                    calScore(
-                      random[index].mid.toString(),
-                      random[index].path,
-                      random[index].name,
-                      random[index].score,
-                      random[1].mid.toString(),
-                      random[1].path,
-                      random[1].name,
-                      random[1].score
-                    );
-                  } else {
-                    calScore(
-                      random[1].mid.toString(),
-                      random[1].path,
-                      random[1].name,
-                      random[1].score,
-                      random[0].mid.toString(),
-                      random[0].path,
-                      random[0].name,
-                      random[0].score
-                    );
-                  }
-                }}
-              >
-                <Box
-                  sx={{
-                    width: 400,
-                    height: 500,
-                    borderRadius: 10,
-                    backgroundColor: "#FFA928",
-                    marginRight: 15,
-                    flexDirection: "column",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    margin: "0 auto",
+
+          {random.length <= 0 ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CircularProgress size={100} style={{ color: "black" }} />
+            </div>
+          ) : (
+            <div
+              style={{
+                width: "900px",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              {/* สุ่มรูปภาพมาแสดงผล */}
+              {random?.map((image, index) => (
+                <div
+                  key={index}
+                  onClick={() => {
+                    if (index == 0) {
+                      calScore(
+                        random[index].mid.toString(),
+                        random[index].path,
+                        random[index].name,
+                        random[index].score,
+                        random[1].mid.toString(),
+                        random[1].path,
+                        random[1].name,
+                        random[1].score
+                      );
+                    } else {
+                      calScore(
+                        random[1].mid.toString(),
+                        random[1].path,
+                        random[1].name,
+                        random[1].score,
+                        random[0].mid.toString(),
+                        random[0].path,
+                        random[0].name,
+                        random[0].score
+                      );
+                    }
                   }}
                 >
-                  <CardMedia
+                  <Box
                     sx={{
-                      height: 300,
-                      width: 300,
-                      borderRadius: 50,
+                      width: 400,
+                      height: 500,
+                      borderRadius: 10,
+                      backgroundColor: "#FFA928",
+                      marginRight: 15,
+                      flexDirection: "column",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
+                      margin: "0 auto",
                     }}
-                    image={image.path}
-                  />
-                  <Typography
-                    gutterBottom
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-
-                      color: "black",
-                      // ml: 2,
-                      fontFamily: "Mitr, sans-serif",
-                    }}
-                    variant="h2"
-                    marginTop={"15px"}
                   >
-                    {image.name} {image.score}
-                  </Typography>
-                </Box>
-              </div>
-            ))}
-          </div>
+                    <CardMedia
+                      sx={{
+                        height: 300,
+                        width: 300,
+                        borderRadius: 50,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      image={image.path}
+                    />
+                    <Typography
+                      gutterBottom
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+
+                        color: "black",
+                        // ml: 2,
+                        fontFamily: "Mitr, sans-serif",
+                      }}
+                      variant="h2"
+                      marginTop={"15px"}
+                    >
+                      {image.name} {image.score}
+                    </Typography>
+                  </Box>
+                </div>
+              ))}
+            </div>
+          )}
         </Box>
       </Container>
 
