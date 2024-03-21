@@ -54,7 +54,7 @@ export class ImageService {
   }
 
   async vote(win:string, Wscore:string, lose:string, Lscore:string) {
-    const url = `http://localhost:3000/vote/${win}/${Wscore}/${lose}/${Lscore}`;
+    const url = `https://facecat-backend.onrender.com/vote/${win}/${Wscore}/${lose}/${Lscore}`;
     const response = await axios.post(url);
     
     return response;
