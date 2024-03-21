@@ -18,6 +18,20 @@ export class UserService {
     return response;
   }
 
+  async getSystemByUid(uid: string) {
+    const url = HOST + `/admin/${uid}`;
+    const response = await axios.get(url);
+    
+    return response;
+  }
+
+  async updateSystemLimit(uid: string, limit: string) {
+    const url = HOST + `/limit/${uid}/${limit}`;
+    const response = await axios.put(url);
+    
+    return response;
+  }
+
   async register(name: string, email: string, pass: string) {
     const url = HOST + "/register";
     const body = {

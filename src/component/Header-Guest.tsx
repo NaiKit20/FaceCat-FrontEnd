@@ -8,7 +8,7 @@ function HeaderGuest() {
   const navigate = useNavigate();
 
   function navigateToLoginPage() {
-    localStorage.clear();
+    localStorage.removeItem("objUser");
     navigate("/");
   }
   function navigateToVotePage() {
