@@ -57,7 +57,8 @@ function Header_Admin() {
   async function setLimit() {
     try {
       await userService.updateSystemLimit(user.uid, limitRef.current!.value);
-      getSystem();
+      await getSystem();
+      handleCloseDialog();
     } catch (error) {
       console.log(error);
     }
@@ -221,7 +222,6 @@ function Header_Admin() {
             onClick={() => {
               if (limitRef.current?.value) {
                 setLimit();
-                handleCloseDialog();
               }
             }}
           >
