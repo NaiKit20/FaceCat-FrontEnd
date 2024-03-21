@@ -136,21 +136,21 @@ function VotePage() {
       lNew: l,
     });
     // กำหนดไม้ให้ผู้แพ้ไม่มีคะแนนติดลบ โดยให้ลดได้จนถึง 0
-    // if (l < 0) {
-    //   await imageService.vote(
-    //     win,
-    //     (w - Wscore).toString(),
-    //     lose,
-    //     (Lscore * -1).toString()
-    //   );
-    // } else {
-    //   await imageService.vote(
-    //     win,
-    //     (w - Wscore).toString(),
-    //     lose,
-    //     (l - Lscore).toString()
-    //   );
-    // }
+    if (l < 0) {
+      await imageService.vote(
+        win,
+        (w - Wscore).toString(),
+        lose,
+        (Lscore * -1).toString()
+      );
+    } else {
+      await imageService.vote(
+        win,
+        (w - Wscore).toString(),
+        lose,
+        (l - Lscore).toString()
+      );
+    }
     // แสดงผลการคำนวน
     handleOpenDialog();
     // บันทึกว่า uid กดโหวต mid ไหนโดยบันทึกเวลาบอกด้วยว่าสามารถกดโหวตได้อีกตอนไหน
