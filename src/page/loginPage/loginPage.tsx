@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   CardMedia,
+  CircularProgress,
   Container,
   TextField,
   Typography,
@@ -10,7 +11,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from "@mui/icons-material/Lock";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/cat.png";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { UserService } from "../../service/userService";
 import { UserPostRes } from "../../model/Response/UserPostRes";
 
@@ -21,6 +22,9 @@ function LoginPage() {
   const userservice = new UserService();
 
   const navigate = useNavigate();
+
+  // Loading
+  const [isLoad, setLoad] = useState(false);
 
   return (
     <>
@@ -123,68 +127,83 @@ function LoginPage() {
                 />
               </div>
               <div>
-                <Button
-                  variant="contained"
-                  style={{ backgroundColor: "white" }}
-                  sx={{
-                    width: "8pc",
-                    color: "black",
-                    fontFamily: "Mitr, sans-serif",
-                    borderRadius: 50,
-                    marginLeft: "140px",
-                    marginTop: "30px",
-                  }}
-                  onClick={async () => {
-                    try {
-                      if (emailRef.current?.value && passRef.current?.value) {
-                        const res = await userservice.login(
-                          emailRef.current.value,
-                          passRef.current.value
-                        );
-                        const login: UserPostRes[] = res.data;
-                        if (res.status == 200) {
-                          if (login[0].type < 1) {
-                            // user
-                            // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อแก้ไขข้อมูล
-                            localStorage.removeItem("objUser");
-                            const user = {
-                              uid: login[0].uid,
-                              email: login[0].email,
-                              pass: passRef.current.value,
-                              image: login[0].image,
-                              name: login[0].name,
-                            };
-                            localStorage.setItem(
-                              "objUser",
-                              JSON.stringify(user)
-                            );
-                            navigate("/home");
-                          } else {
-                            // admin
-                            // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อแก้ไขข้อมูล
-                            localStorage.removeItem("objUser");
-                            const user = {
-                              uid: login[0].uid,
-                              email: login[0].email,
-                              pass: passRef.current.value,
-                              image: login[0].image,
-                              name: login[0].name,
-                            };
-                            localStorage.setItem(
-                              "objUser",
-                              JSON.stringify(user)
-                            );
-                            navigate("/admin");
+                {isLoad ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CircularProgress style={{ color: "white" }} />
+                  </div>
+                ) : (
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    sx={{
+                      width: "8pc",
+                      color: "black",
+                      fontFamily: "Mitr, sans-serif",
+                      borderRadius: 50,
+                      marginLeft: "140px",
+                      marginTop: "30px",
+                    }}
+                    onClick={async () => {
+                      try {
+                        if (emailRef.current?.value && passRef.current?.value) {
+                          setLoad(true)
+                          const res = await userservice.login(
+                            emailRef.current.value,
+                            passRef.current.value
+                          );
+                          setLoad(false)
+                          const login: UserPostRes[] = res.data;
+                          if (res.status == 200) {
+                            if (login[0].type < 1) {
+                              // user
+                              // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อแก้ไขข้อมูล
+                              localStorage.removeItem("objUser");
+                              const user = {
+                                uid: login[0].uid,
+                                email: login[0].email,
+                                pass: passRef.current.value,
+                                image: login[0].image,
+                                name: login[0].name,
+                              };
+                              localStorage.setItem(
+                                "objUser",
+                                JSON.stringify(user)
+                              );
+                              navigate("/home");
+                            } else {
+                              // admin
+                              // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อแก้ไขข้อมูล
+                              localStorage.removeItem("objUser");
+                              const user = {
+                                uid: login[0].uid,
+                                email: login[0].email,
+                                pass: passRef.current.value,
+                                image: login[0].image,
+                                name: login[0].name,
+                              };
+                              localStorage.setItem(
+                                "objUser",
+                                JSON.stringify(user)
+                              );
+                              navigate("/admin");
+                            }
                           }
                         }
+                      } catch (error) {
+                        setLoad(false)
+                        console.log(error);
                       }
-                    } catch (error) {
-                      console.log(error);
-                    }
-                  }}
-                >
-                  เข้าสู่ระบบ
-                </Button>
+                    }}
+                  >
+                    เข้าสู่ระบบ
+                  </Button>
+                )}
               </div>
               <div>
                 <Typography

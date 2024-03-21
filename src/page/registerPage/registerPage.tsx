@@ -1,10 +1,10 @@
-import { CardMedia, Typography, TextField, Button } from "@mui/material";
+import { CardMedia, Typography, TextField, Button, CircularProgress } from "@mui/material";
 import { Container, Box } from "@mui/system";
 import { Link, useNavigate } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import logo from "../../assets/cat.png";
 import { UserService } from "../../service/userService";
 
@@ -17,6 +17,9 @@ function RegisterPage() {
   const userservice = new UserService();
 
   const navigate = useNavigate();
+
+  // Loading
+  const [isLoad, setLoad] = useState(false);
 
   return (
     <>
@@ -153,41 +156,56 @@ function RegisterPage() {
                 />
               </div>
               <div>
-                <Button
-                  variant="contained"
-                  style={{ backgroundColor: "white" }}
-                  sx={{
-                    width: "8pc",
-                    color: "black",
-                    borderRadius: 50,
-                    marginLeft: "140px",
-                    marginTop: "10px",
-                    fontFamily: "Mitr, sans-serif",
-                  }}
-                  onClick={async () => {
-                    try {
-                      if (
-                        nameRef.current?.value &&
-                        emailRef.current?.value &&
-                        passRef.current?.value == cfpassRef.current?.value
-                      ) {
-                        const res = await userservice.register(
-                          nameRef.current!.value,
-                          emailRef.current!.value,
-                          passRef.current!.value
-                        );
-                        if (res.status == 201) {
-                          console.log(res.data);
-                          navigate(-1);
+                {isLoad ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CircularProgress style={{ color: "white" }} />
+                  </div>
+                ) : (
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    sx={{
+                      width: "8pc",
+                      color: "black",
+                      borderRadius: 50,
+                      marginLeft: "140px",
+                      marginTop: "10px",
+                      fontFamily: "Mitr, sans-serif",
+                    }}
+                    onClick={async () => {
+                      try {
+                        if (
+                          nameRef.current?.value &&
+                          emailRef.current?.value &&
+                          passRef.current?.value == cfpassRef.current?.value
+                        ) {
+                          setLoad(true);
+                          const res = await userservice.register(
+                            nameRef.current!.value,
+                            emailRef.current!.value,
+                            passRef.current!.value
+                          );
+                          setLoad(false);
+                          if (res.status == 201) {
+                            console.log(res.data);
+                            navigate(-1);
+                          }
                         }
+                      } catch (error) {
+                        setLoad(false);
+                        console.log(error);
                       }
-                    } catch (error) {
-                      console.log(error);
-                    }
-                  }}
-                >
-                  สมัครสมาชิก
-                </Button>
+                    }}
+                  >
+                    สมัครสมาชิก
+                  </Button>
+                )}
               </div>
               <div>
                 <Typography
