@@ -58,9 +58,9 @@ function EditProfilePage() {
   async function selectFile(event: ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
       // แก้ไขรูป user
-      console.log("Uploadding...");
+      // console.log("Uploadding...");
       const res = await userService.avatar(event.target.files[0], user.uid);
-      console.log("Success");
+      // console.log("Success");
       // แก้ไขข้อมูลใน localstorage
       user.image = res.data["result"];
       localStorage.setItem("objUser", JSON.stringify(user));
@@ -73,16 +73,13 @@ function EditProfilePage() {
     if (imageNameRef.current?.value != "") {
       if (event.target.files) {
         // เพิ่มรูปภาพ
-        console.log("Uploadding...");
         setLoad(true);
-        const res = await imageService.insert(
+        await imageService.insert(
           event.target.files[0],
           user.uid,
           imageNameRef.current!.value
         );
-        console.log("Success");
         setLoad(false);
-        console.log(res.data);
         loadImages();
       }
     }

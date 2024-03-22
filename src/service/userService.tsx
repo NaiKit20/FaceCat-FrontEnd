@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-refresh/only-export-components
-const HOST: string = "https://facecat-backend.onrender.com/user";
+const HOST: string = "https://facecat-backend-v2.onrender.com/user";
 
 export class UserService {
   async getAll() {
@@ -74,6 +74,7 @@ export class UserService {
     const response = await axios.post(url, body, {
       headers: {
         "Content-Type": "multipart/form-data",
+        'Access-Control-Allow-Origin': '*'
       },
     });
     return response;
