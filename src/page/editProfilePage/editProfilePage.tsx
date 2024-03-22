@@ -6,6 +6,7 @@ import {
   Button,
   Alert,
   Dialog,
+  CircularProgress,
 } from "@mui/material";
 import { Box, styled } from "@mui/system";
 // import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
@@ -21,6 +22,8 @@ function EditProfilePage() {
   const navigate = useNavigate();
   const userService = new UserService();
   const imageService = new ImageService();
+  // Loading
+  const [isLoad, setLoad] = useState(false);
 
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("objUser")!)
@@ -67,16 +70,18 @@ function EditProfilePage() {
 
   // ทำงานเมื่อกดเพิ่มรูป
   async function selectFileImage(event: ChangeEvent<HTMLInputElement>) {
-    if(imageNameRef.current?.value != "") {
+    if (imageNameRef.current?.value != "") {
       if (event.target.files) {
         // เพิ่มรูปภาพ
         console.log("Uploadding...");
+        setLoad(true);
         const res = await imageService.insert(
           event.target.files[0],
           user.uid,
-          imageNameRef.current!.value,
+          imageNameRef.current!.value
         );
         console.log("Success");
+        setLoad(false);
         console.log(res.data);
         loadImages();
       }
@@ -195,6 +200,7 @@ function EditProfilePage() {
                       alignItems: "center",
                       border: "2px solid white",
                     }}
+                    component={"img"}
                     image={user.image}
                   />
                 </Box>
@@ -357,7 +363,12 @@ function EditProfilePage() {
 
               {images.length < 5 ? (
                 <Grid item xs={1.8} style={{ marginTop: "30px" }}>
-                  <div style={{ backgroundColor: "white", borderRadius: 15 }}>
+                  <div
+                    style={{
+                      backgroundColor: "white",
+                      borderRadius: 15,
+                    }}
+                  >
                     <Box
                       sx={{
                         height: 160,
@@ -370,38 +381,34 @@ function EditProfilePage() {
                         flexDirection: "column",
                       }}
                     >
-                      <TextField
-                        inputRef={imageNameRef}
-                        sx={{ m: 1, width: "80%" }}
-                        InputProps={{
-                          sx: { borderRadius: "30px", bgcolor: "white" },
-                          readOnly: false,
-                        }}
-                        placeholder="ใส่ชื่อก่อน!"
-                      />
-                      <Button
-                        variant="contained"
-                        component="label"
-                        color="primary"
-                        sx={{ borderRadius: "30px", width: "80%" }}
-                      >
-                        {/* <AddPhotoAlternateOutlinedIcon
-                          sx={{
-                            height: 100,
-                            width: 100,
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            marginLeft: "10px",
-                          }}
-                        /> */}
-                        เพิ่มรูปภาพ
-                        <VisuallyHiddenInput
-                          type="file"
-                          accept="image/*"
-                          onChange={selectFileImage}
-                        />
-                      </Button>
+                      {isLoad ? (
+                        <CircularProgress style={{ color: "black" }} />
+                      ) : (
+                        <>
+                          <TextField
+                            inputRef={imageNameRef}
+                            sx={{ m: 1, width: "80%" }}
+                            InputProps={{
+                              sx: { borderRadius: "30px", bgcolor: "white" },
+                              readOnly: false,
+                            }}
+                            placeholder="ใส่ชื่อก่อน!"
+                          />
+                          <Button
+                            variant="contained"
+                            component="label"
+                            color="primary"
+                            sx={{ borderRadius: "30px", width: "80%" }}
+                          >
+                            เพิ่มรูปภาพ
+                            <VisuallyHiddenInput
+                              type="file"
+                              accept="image/*"
+                              onChange={selectFileImage}
+                            />
+                          </Button>
+                        </>
+                      )}
                     </Box>
                   </div>
                 </Grid>

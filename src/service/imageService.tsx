@@ -27,6 +27,7 @@ export class ImageService {
     const response = await axios.post(url, body, {
       headers: {
         "Content-Type": "multipart/form-data",
+        'Access-Control-Allow-Origin': '*',
       },
     });
     return response;

@@ -94,6 +94,7 @@ function ProfilePage() {
                     alignItems: "center",
                     border: "2px solid white",
                   }}
+                  component={"img"}
                   image={user.image}
                 />
               </div>
