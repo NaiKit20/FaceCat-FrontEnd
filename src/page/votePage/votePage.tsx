@@ -33,6 +33,9 @@ function VotePage() {
     lNew: 0,
   });
 
+  const [result1, setResult1] = useState<string[]>([]);
+  const [result2, setResult2] = useState<string[]>([]);
+
   // บันทึกข้อมูลการกดโหวตลงใน localstorage ว่า uid กดโหวต mid ไหนและเวลาที่สามารถกดได้อีก
   function vote(uid: string, mid: string, date: string) {
     localStorage.setItem(`${uid}:${mid}`, date.toString());
@@ -121,6 +124,19 @@ function VotePage() {
     // คะแนนล่าสุด
     const w: number = Math.floor(Wscore + K * (1 - Ew));
     const l: number = Math.floor(Lscore + K * (0 - El));
+    // เก็บการคำนวน
+    setResult1([
+      `E${Wname}=1/(1+10^(${Lscore}-${Wscore})/400) = ${Ew.toFixed(2)}`,
+      `R${Wname} ทั้ง 2 กรณี โดยที่มีค่า K=20`,
+      `(ชนะ) ${Wscore}+20(1-${Ew.toFixed(2)}) = ${Math.floor(Wscore + K * (1 - Ew))}`,
+      `(แพ้) ${Wscore}+20(0-${Ew.toFixed(2)}) = ${Math.floor(Wscore + K * (0 - Ew))}`
+    ]);
+    setResult2([
+      `E${Lname}=1/(1+10^(${Wscore}-${Lscore})/400) = ${El.toFixed(2)}`,
+      `R${Lname} ทั้ง 2 กรณี โดยที่มีค่า K=20`,
+      `(ชนะ) ${Lscore}+20(1-${El.toFixed(2)}) = ${Math.floor(Lscore + K * (1 - El))}`,
+      `(แพ้) ${Lscore}+20(0-${El.toFixed(2)}) = ${Math.floor(Lscore + K * (0 - El))}`
+    ]);
     // ผลการคำนวน
     setObjCal({
       win: Wname,
@@ -315,14 +331,23 @@ function VotePage() {
         open={openDialog}
         onClose={handleCloseDialog}
         onClick={() => handleCloseDialog()}
+        fullScreen
+        sx={{
+          margin: "0 auto",
+          marginTop: "100px",
+          width: "700px", // ปรับความกว้างตามที่ต้องการ
+          height: "500px", // ปรับความสูงตามที่ต้องการ
+        }}
       >
         <DialogTitle>ผลลัพธ์</DialogTitle>
         <DialogContent>
           <div
             style={{
+              margin: "0 auto",
+              padding: "0",
               display: "flex",
-              width: "500px",
-              height: "300px",
+              width: "90%",
+              height: "400px",
             }}
           >
             <Box
@@ -357,6 +382,21 @@ function VotePage() {
               <p>คะแนนเดิมมีอยู่: {objCal.wScore}</p>
               <p>ได้คะแนนเพิ่มขึ้น: {objCal.wSum}</p>
               <p>คะแนนใหม่ที่ได้คือ: {objCal.wNew}</p>
+
+              <br />
+              <h4>คำนวนจาก</h4>
+              <p>
+              {result1[0]}
+              </p>
+              <p>
+              {result1[1]}
+              </p>
+              <p>
+              {result1[2]}
+              </p>
+              <p>
+              {result1[3]}
+              </p>
             </Box>
             <hr />
             <Box
@@ -395,6 +435,21 @@ function VotePage() {
               ) : (
                 <p>คะแนนใหม่ที่ได้คือ: {objCal.lNew}</p>
               )}
+
+              <br />
+              <h4>คำนวนจาก</h4>
+              <p>
+              {result2[0]}
+              </p>
+              <p>
+              {result2[1]}
+              </p>
+              <p>
+              {result2[2]}
+              </p>
+              <p>
+              {result2[3]}
+              </p>
             </Box>
           </div>
         </DialogContent>

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-refresh/only-export-components
-const HOST: string = "https://facecat-backend-v2.onrender.com/user";
+const HOST: string = "https://facecat-backend.onrender.com/user";
 
 export class UserService {
   async getAll() {
