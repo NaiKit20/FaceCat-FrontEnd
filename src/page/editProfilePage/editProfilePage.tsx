@@ -34,12 +34,14 @@ function EditProfilePage() {
 
   const emailRef = useRef<HTMLInputElement>();
   const passRef = useRef<HTMLInputElement>();
+  const passCfRef = useRef<HTMLInputElement>();
   const nameRef = useRef<HTMLInputElement>();
   const imageNameRef = useRef<HTMLInputElement>();
 
   // dialog
   const [dialogEdit, setDialogEdit] = useState(false);
   const [dialogDelete, setDialogDelete] = useState(false);
+  const [alertShow, setAlertShow] = useState("แน่ใจนะว่าจะแก้ไข");
 
   // upload file ตั้งค่า styled ให้ input ไม่แสดงผลให้เห็นแต่ยังใช้งานได้
   const VisuallyHiddenInput = styled("input")({
@@ -226,7 +228,7 @@ function EditProfilePage() {
                 <div>
                   <TextField
                     inputRef={nameRef}
-                    sx={{ m: 1, width: "40ch" }}
+                    sx={{ m: 1, width: "25ch" }}
                     InputProps={{
                       sx: { borderRadius: "50px", bgcolor: "white" },
                       readOnly: false,
@@ -259,7 +261,7 @@ function EditProfilePage() {
                 <div>
                   <TextField
                     inputRef={emailRef}
-                    sx={{ m: 1, width: "40ch" }}
+                    sx={{ m: 1, width: "30ch" }}
                     InputProps={{
                       sx: { borderRadius: "50px", bgcolor: "white" },
                       readOnly: false,
@@ -292,11 +294,44 @@ function EditProfilePage() {
                 <div>
                   <TextField
                     inputRef={passRef}
-                    sx={{ m: 1, width: "40ch" }}
+                    sx={{ m: 1, width: "30ch" }}
                     InputProps={{
                       sx: { borderRadius: "50px", bgcolor: "white" },
                       readOnly: false,
-                      defaultValue: user.pass,
+                      // defaultValue: user.pass,
+                    }}
+                  />
+                </div>
+              </div>
+              <div
+                style={{
+                  marginBottom: "20px",
+                  marginLeft: "20px",
+                }}
+              >
+                <div>
+                  <Typography
+                    gutterBottom
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      color: "black",
+                      ml: 2,
+                      fontFamily: "Mitr, sans-serif",
+                    }}
+                    variant="h5"
+                  >
+                    ยืนยันรหัสผ่าน
+                  </Typography>
+                </div>
+                <div>
+                  <TextField
+                    inputRef={passCfRef}
+                    sx={{ m: 1, width: "30ch" }}
+                    InputProps={{
+                      sx: { borderRadius: "50px", bgcolor: "white" },
+                      readOnly: false,
+                      // defaultValue: user.pass,
                     }}
                   />
                 </div>
@@ -434,6 +469,7 @@ function EditProfilePage() {
             fontFamily: "Mitr, sans-serif",
           }}
           onClick={async () => {
+            setAlertShow("แน่ใจนะว่าจะแก้ไข");
             setDialogEdit(true);
           }}
         >
@@ -473,7 +509,9 @@ function EditProfilePage() {
                   if (
                     nameRef.current?.value &&
                     emailRef.current?.value &&
-                    passRef.current?.value
+                    passRef.current?.value &&
+                    passCfRef.current?.value &&
+                    (passRef.current?.value == passCfRef.current?.value)
                   ) {
                     const res = await userService.update(
                       user.uid,
@@ -482,7 +520,7 @@ function EditProfilePage() {
                       passRef.current?.value
                     );
                     if (res.status == 200) {
-                      // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อ login สำเร็จ
+                      // เก็บข้อมูลผู้ใช้ใน localStorage เมื่อ update สำเร็จ
                       const userUpdate = {
                         uid: user.uid,
                         email: emailRef.current?.value,
@@ -497,6 +535,8 @@ function EditProfilePage() {
                       // ย้อนกลับไปหน้า profile
                       navigate(-1);
                     }
+                  } else {
+                    setAlertShow("ข้อมูลไม่ถูกต้อง");
                   }
                 } catch (error) {
                   console.log(error);
@@ -507,14 +547,16 @@ function EditProfilePage() {
             </Button>
           }
         >
-          แน่ใจนะกว่าจะแก้ไข
+          {alertShow}
         </Alert>
       </Dialog>
 
       {/* ยืนยันการลบรูป */}
       <Dialog
         open={dialogDelete}
-        onClose={() => setDialogDelete(false)}
+        onClose={() => {
+          setDialogDelete(false);
+        }}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >

@@ -1,29 +1,53 @@
 import { Box } from "@mui/system";
 import "./detailImagePage.css";
-import { Button, CardMedia, Typography } from "@mui/material";
+import {
+  Button,
+  CardMedia,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 // import { LineChart } from "@mui/x-charts/LineChart";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { VoteService } from "../../service/voteService";
 import { CalScoreRes } from "../../model/Response/calScoreRes";
 import { BarChart } from "@mui/x-charts/BarChart";
+import { ImageService } from "../../service/imageService";
 
 function DetailImagePage() {
   const params = useParams();
   const navigate = useNavigate();
   const voteService = new VoteService();
+  const imageService = new ImageService();
+  const nameRef = useRef<HTMLInputElement>();
 
+  const user = JSON.parse(localStorage.getItem("objUser")!);
   const mid = params.mid;
   const [score, setScore] = useState<CalScoreRes>();
+  const [openDialog, setOpenDialog] = useState(false); // สถานะของ dialog
+
+  // Function เปิด dialog
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  // Function ปิด dialog
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const loadDataAsync = async () => {
+    const res = await voteService.calScore(mid!);
+    const data: CalScoreRes = res.data;
+    setScore(data);
+  };
 
   // InitState
   useEffect(() => {
-    const loadDataAsync = async () => {
-      const res = await voteService.calScore(mid!);
-      const data: CalScoreRes = res.data;
-      setScore(data);
-    };
     loadDataAsync();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -32,7 +56,7 @@ function DetailImagePage() {
     <>
       <Box
         sx={{
-          width: 1000,
+          width: 1050,
           height: 550,
           borderRadius: 10,
           backgroundColor: "#FFA928",
@@ -101,7 +125,14 @@ function DetailImagePage() {
                   border: "2px solid white",
                 }}
               />
-              <div style={{ marginTop: "20px" }}>
+              <div
+                style={{ marginTop: "20px" }}
+                onClick={() => {
+                  if (user.uid == score?.uid) {
+                    handleOpenDialog();
+                  }
+                }}
+              >
                 <Typography
                   gutterBottom
                   sx={{
@@ -128,7 +159,7 @@ function DetailImagePage() {
           >
             <Box
               sx={{
-                width: 600,
+                width: 650,
                 height: 450,
                 borderRadius: 10,
                 backgroundColor: "white",
@@ -144,7 +175,7 @@ function DetailImagePage() {
                     },
                   ]}
                   series={[{ data: score.score }]}
-                  width={650}
+                  width={700}
                   height={470}
                 />
               ) : null}
@@ -152,6 +183,48 @@ function DetailImagePage() {
           </div>
         </div>
       </Box>
+
+      {/* Dialog แก้ไขเวลาในการโหวต */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>แก้ไขชื่อรูป</DialogTitle>
+        <DialogContent>
+          <TextField
+            inputRef={nameRef}
+            sx={{ m: 1, width: "40ch" }}
+            InputProps={{
+              sx: { borderRadius: "50px", bgcolor: "white" },
+              readOnly: false,
+              defaultValue: score?.name,
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            style={{ backgroundColor: "#FFA928" }}
+            sx={{
+              width: "8pc",
+              color: "white",
+              borderRadius: 3,
+              mr: 2,
+              fontFamily: "Mitr, sans-serif",
+            }}
+            onClick={async () => {
+              if (nameRef.current?.value) {
+                await imageService.putImagesEdit(
+                  score!.mid.toString(),
+                  nameRef.current?.value
+                );
+
+                loadDataAsync();
+                handleCloseDialog();
+              }
+            }}
+          >
+            แก้ไขข้อมูล
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
