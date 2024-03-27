@@ -568,9 +568,7 @@ function EditProfilePage() {
               size="small"
               onClick={async () => {
                 try {
-                  const res = await imageService.delete(imageDelete);
-                  console.log(res.data);
-
+                  await imageService.delete(imageDelete);
                   loadImages();
                   setDialogDelete(false);
                 } catch (error) {
@@ -582,7 +580,7 @@ function EditProfilePage() {
             </Button>
           }
         >
-          แน่ใจนะกว่าจะลบรูปนี้
+          แน่ใจนะว่าจะลบรูปนี้
         </Alert>
       </Dialog>
     </>

@@ -3,6 +3,7 @@ import "./detailImagePage.css";
 import {
   Button,
   CardMedia,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -13,23 +14,50 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 // import { LineChart } from "@mui/x-charts/LineChart";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { VoteService } from "../../service/voteService";
 import { CalScoreRes } from "../../model/Response/calScoreRes";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { ImageService } from "../../service/imageService";
+import imageUp from "../../assets/draw.png";
 
 function DetailImagePage() {
   const params = useParams();
   const navigate = useNavigate();
   const voteService = new VoteService();
   const imageService = new ImageService();
-  const nameRef = useRef<HTMLInputElement>();
 
+  const nameRef = useRef<HTMLInputElement>();
+  const [isMouseOver, setIsMouseOver] = useState(false);
   const user = JSON.parse(localStorage.getItem("objUser")!);
   const mid = params.mid;
   const [score, setScore] = useState<CalScoreRes>();
+  const [isLoad, setIsLoad] = useState(false);
   const [openDialog, setOpenDialog] = useState(false); // สถานะของ dialog
+
+  // ทำงานเมื่อกดเพิ่มรูป
+  async function selectFileImage(event: ChangeEvent<HTMLInputElement>) {
+    if (event.target.files) {
+      setIsLoad(true);
+      // ลบรูปเดิมออกก่อน
+      await imageService.delete(score!.mid.toString());
+      // เพิ่มรูปภาพ
+      await imageService.insert(
+        event.target.files[0],
+        score!.uid.toString(),
+        score!.name
+      );
+      navigate(-1);
+    }
+  }
+
+  // สั่งเปิดเลือกไฟล์
+  const openFileInput = () => {
+    const fileInput = document.getElementById("fileInput");
+    if (fileInput) {
+      fileInput.click();
+    }
+  };
 
   // Function เปิด dialog
   const handleOpenDialog = () => {
@@ -110,21 +138,58 @@ function DetailImagePage() {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <CardMedia
-                component="img"
-                image={score?.path}
-                alt=""
-                sx={{
-                  height: 180,
-                  width: 180,
-                  borderRadius: 40,
-                  marginTop: "20px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  border: "2px solid white",
-                }}
-              />
+              {isMouseOver ? (
+                <>
+                  <CardMedia
+                    component="img"
+                    image={imageUp}
+                    alt=""
+                    sx={{
+                      height: 180,
+                      width: 180,
+                      borderRadius: 40,
+                      marginTop: "20px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      border: "2px solid black",
+                    }}
+                    onMouseOut={() => setIsMouseOver(false)}
+                    onClick={() => {
+                      openFileInput();
+                    }}
+                  />
+                  <input
+                    id="fileInput"
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={selectFileImage}
+                  />
+                </>
+              ) : (
+                <CardMedia
+                  component="img"
+                  image={score?.path}
+                  alt=""
+                  sx={{
+                    height: 180,
+                    width: 180,
+                    borderRadius: 40,
+                    marginTop: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    border: "2px solid white",
+                  }}
+                  onMouseOver={() => {
+                    if(user.uid == score?.uid) {
+                      setIsMouseOver(true);
+                    }
+                  }}
+                />
+              )}
+
               <div
                 style={{ marginTop: "20px" }}
                 onClick={() => {
@@ -224,6 +289,13 @@ function DetailImagePage() {
             แก้ไขข้อมูล
           </Button>
         </DialogActions>
+      </Dialog>
+
+      {/* Dialog LoadEdit */}
+      <Dialog open={isLoad}>
+        <DialogContent>
+        <CircularProgress style={{ color: "black" }} />
+        </DialogContent>
       </Dialog>
     </>
   );

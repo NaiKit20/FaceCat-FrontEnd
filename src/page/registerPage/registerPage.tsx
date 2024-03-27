@@ -199,7 +199,7 @@ function RegisterPage() {
                         }
                       } catch (error) {
                         setLoad(false);
-                        console.log(error);
+                        alert("ชื่อผู้ใช้งาน หรือ อีเมล ถูกใช้งานไปแล้ว!!!");
                       }
                     }}
                   >

@@ -198,6 +198,7 @@ function LoginPage() {
                       } catch (error) {
                         setLoad(false)
                         console.log(error);
+                        alert("ไม่พบข้อมูลผู้ใช้งาน!!!")
                       }
                     }}
                   >

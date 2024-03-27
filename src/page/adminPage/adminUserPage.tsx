@@ -23,7 +23,12 @@ function AdminUserPage() {
 
   return (
     <>
-      <Grid sx={{ flexGrow: 1 }} container spacing={2}>
+      {users.length > 8 ? (
+        <div
+          style={{ marginTop: "300px", widows: "100px", height: "100px" }}
+        ></div>
+      ) : null}
+      <Grid sx={{ flexGrow: 1, border: "1px solid red" }} container spacing={2}>
         <Grid item xs={12}>
           <Grid container display={"flex"} justifyContent="center" spacing={8}>
             {users.map((user, index) => (
@@ -51,7 +56,7 @@ function AdminUserPage() {
                         justifyContent: "center",
                         alignItems: "center",
                         marginTop: "30px",
-                        border: "2px solid white"
+                        border: "2px solid white",
                       }}
                       component="img"
                       image={user.image}
